@@ -1352,50 +1352,53 @@ function ContactSection({ isDark, primaryColor, isTouch }: { isDark: boolean; pr
                 title="LinkedIn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center w-9 h-9 transition-colors duration-300"
+                className="flex items-center justify-center w-9 h-9 transition-all duration-300"
                 style={{
-                  border: `1px solid ${primaryColor}22`,
-                  color: muted,
+                  border: `1px solid ${primaryColor}55`,
+                  color: primaryColor,
+                  opacity: 0.75,
                 }}
                 data-hover
                 onMouseEnter={e => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.color = primaryColor;
-                  el.style.borderColor = `${primaryColor}66`;
+                  el.style.opacity = '1';
+                  el.style.borderColor = primaryColor;
                 }}
                 onMouseLeave={e => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.color = muted;
-                  el.style.borderColor = `${primaryColor}22`;
+                  el.style.opacity = '0.75';
+                  el.style.borderColor = `${primaryColor}55`;
                 }}>
-                <Linkedin size={14} strokeWidth={1.4} />
+                <Linkedin size={15} strokeWidth={1.5} />
               </a>
             </Magnetic>
             <Magnetic strength={0.3} disabled={isTouch}>
-              <a href="https://linktr.ee/yikian44"
+              <a href="https://linktr.ee/YiKian"
                 aria-label="Linktree"
                 title="Linktree"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center w-9 h-9 transition-all duration-300 overflow-hidden relative group"
+                className="flex items-center justify-center w-9 h-9 transition-all duration-300"
                 style={{
-                  border: `1px solid ${primaryColor}22`,
+                  border: `1px solid ${primaryColor}55`,
+                  color: primaryColor,
+                  opacity: 0.75,
                 }}
                 data-hover
                 onMouseEnter={e => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = `${primaryColor}66`;
+                  el.style.opacity = '1';
+                  el.style.borderColor = primaryColor;
                 }}
                 onMouseLeave={e => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = `${primaryColor}22`;
+                  el.style.opacity = '0.75';
+                  el.style.borderColor = `${primaryColor}55`;
                 }}>
-                <img
-                  src="/linktree-qr.png"
-                  alt="Linktree QR Code"
-                  className="w-full h-full object-cover"
-                  style={{ filter: 'invert(0)', opacity: 0.85 }}
-                />
+                {/* Linktree logo */}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.953 15.066c-.08.163-.08.324-.08.486.08.568.486.973 1.054.973h.08c.405-.08.81-.243 1.134-.567l4.13-4.044v5.746c0 .647.485 1.134 1.134 1.134.648 0 1.134-.487 1.134-1.134V11.914l4.13 4.044c.324.324.729.567 1.134.567h.08c.567 0 .973-.405 1.053-.973 0-.162 0-.323-.08-.486L15.84 8.931l5.017-5.017c.324-.324.405-.81.162-1.215-.243-.405-.729-.567-1.134-.405L14.302 5.35l-.567-4.611C13.654.253 13.168 0 12.601 0c-.567 0-1.053.243-1.134.73l-.567 4.61L5.317 2.294c-.405-.162-.891 0-1.134.405-.243.405-.162.891.162 1.215l5.017 5.017-5.41 6.135z"/>
+                </svg>
               </a>
             </Magnetic>
           </div>
