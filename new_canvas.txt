@@ -1,0 +1,4 @@
+function HeroCanvas({ isDark, scrollProgressRef }: {
+  isDark: boolean;
+  scrollProgressRef: MutableRefObject<number>;
+}

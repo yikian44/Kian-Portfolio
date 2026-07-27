@@ -1,0 +1,96 @@
+function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor: string }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const textFg = isDark ? "#dce3f6" : "#0f0c0e";
+  const bodyColor = isDark ? "rgba(220,227,246,0.65)" : "rgba(15,12,14,0.68)";
+  const muted = isDark ? "rgba(220,227,246,0.35)" : "rgba(15,12,14,0.42)";
+
+  const skills = [
+    "UI/UX & Interaction Design", "Creative Media & Visual Design", "Figma",
+    "Adobe Creative Cloud", "LottieFiles", "React & Framer Motion", "WebGL / Three.js",
+    "FlutterFlow", "Godot", "Firebase", "Frontend Architecture", "AI Assistant Design", "Vibe Coding"
+  ];
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const el = sectionRef.current;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(".about-left",
+        { x: -28 },
+        { x: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 90%", once: true } }
+      );
+      gsap.fromTo(".about-right",
+        { x: 28 },
+        { x: 0, duration: 0.9, delay: 0.15, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 90%", once: true } }
+      );
+      gsap.utils.toArray<HTMLElement>(".skill-tag").forEach((tag, i) => {
+        gsap.fromTo(tag, { y: 10 }, { y: 0, duration: 0.4, delay: i * 0.04, ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 75%", once: true } });
+      });
+
+
+    }, el);
+    return () => ctx.revert();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <section id="about" ref={sectionRef} className="relative z-10 px-8 md:px-14 py-20 md:py-28">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-24">
+        <div className="about-left">
+          <div className="flex items-baseline gap-4 mb-8">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>02</span>
+            <h2 className="font-display font-bold" style={{ fontSize: "clamp(1.8rem, 4vw, 3.5rem)", letterSpacing: "-0.02em", color: textFg }}>
+              About
+            </h2>
+          </div>
+          <p className="font-body text-base leading-[1.9] mb-6" style={{ color: bodyColor }}>
+            I specialize in UI/UX design and building stunning, high-precision web applications. My focus is on integrating clean vector aesthetics, highly structured layouts, and fluid micro-animations into functional digital products.
+          </p>
+          <div className="mt-14 relative w-24 h-24" style={{ opacity: 0.13, color: primaryColor }}>
+            <div className="absolute inset-0 border border-current" />
+            <div className="absolute top-3.5 left-3.5 right-3.5 bottom-3.5 border border-current" />
+            <div className="absolute inset-0 flex items-center"><div className="w-full h-px bg-current" /></div>
+            <div className="absolute inset-0 flex justify-center"><div className="h-full w-px bg-current" /></div>
+            <div className="absolute top-1/2 left-1/2 w-2.5 h-2.5 border border-current"
+              style={{ transform: "translate(-50%,-50%) rotate(45deg)" }} />
+          </div>
+        </div>
+
+        <div className="about-right">
+          {/* Education */}
+          <div className="mb-12">
+            <p className="font-mono text-[9px] uppercase tracking-[0.28em] mb-6" style={{ color: primaryColor }}>Education Background</p>
+            <div className="flex flex-col gap-6">
+              <div className="relative pl-4" style={{ borderLeft: `1px solid ${primaryColor}22` }}>
+                <div className="absolute top-1.5 -left-1 w-2 h-2 rounded-full" style={{ background: primaryColor }} />
+                <p className="font-mono text-[8px] uppercase tracking-widest mb-1.5" style={{ color: muted }}>2024 - 2027</p>
+                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>Bachelor in Creative Media</h4>
+                <p className="font-body text-[11px]" style={{ color: muted }}>Taylor's University</p>
+              </div>
+              <div className="relative pl-4" style={{ borderLeft: `1px solid ${primaryColor}22` }}>
+                <div className="absolute top-1.5 -left-1 w-2 h-2 rounded-full bg-transparent border" style={{ borderColor: primaryColor }} />
+                <p className="font-mono text-[8px] uppercase tracking-widest mb-1.5" style={{ color: muted }}>2017 - 2023</p>
+                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>High School / Secondary Education</h4>
+                <p className="font-body text-[11px]" style={{ color: muted }}>Chung Hua Independent High School Klang</p>
+              </div>
+            </div>
+          </div>
+          <div className="h-px w-full mb-8" style={{ background: `${primaryColor}18` }} />
+          <p className="font-mono text-[9px] uppercase tracking-[0.28em] mb-4" style={{ color: primaryColor }}>Creative Toolkit</p>
+          <div className="flex flex-wrap gap-2">
+            {skills.map(skill => (
+              <span key={skill} className="skill-tag font-mono text-[9px] uppercase tracking-widest px-3 py-1.5 cursor-default"
+                style={{ border: `1px solid ${primaryColor}22`, color: muted, transition: "border-color 0.3s, color 0.3s" }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = `${primaryColor}88`; el.style.color = primaryColor; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = `${primaryColor}22`; el.style.color = muted; }}
+                data-hover>
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

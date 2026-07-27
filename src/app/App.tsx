@@ -1345,41 +1345,18 @@ function ContactSection({ isDark, primaryColor, isTouch }: { isDark: boolean; pr
               </span>
             </a>
           </Magnetic>
-          <div className="flex gap-3">
-            {([
-              { href: "https://www.linkedin.com/in/gan-yi-kian-6b1816365/", Icon: Linkedin, label: "LinkedIn" },
-              { href: "#", Icon: BookMarked, label: "Read.cv" },
-            ] as const).map(({ href, Icon, label }) => (
-              <Magnetic key={label} strength={0.3} disabled={isTouch}>
-                <a href={href}
-                  aria-label={label}
-                  title={label}
-                  className="flex items-center justify-center w-9 h-9 transition-colors duration-300"
-                  style={{
-                    border: `1px solid ${primaryColor}22`,
-                    color: muted,
-                  }}
-                  data-hover
-                  onMouseEnter={e => {
-                    const el = e.currentTarget as HTMLElement;
-                    el.style.color = primaryColor;
-                    el.style.borderColor = `${primaryColor}66`;
-                  }}
-                  onMouseLeave={e => {
-                    const el = e.currentTarget as HTMLElement;
-                    el.style.color = muted;
-                    el.style.borderColor = `${primaryColor}22`;
-                  }}>
-                  <Icon size={14} strokeWidth={1.4} />
-                </a>
-              </Magnetic>
-            ))}
+          <div className="flex gap-3 items-center">
             <Magnetic strength={0.3} disabled={isTouch}>
-              <a href="#"
-                aria-label="View work"
-                title="View all work"
+              <a href="https://www.linkedin.com/in/gan-yi-kian-6b1816365/"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center w-9 h-9 transition-colors duration-300"
-                style={{ border: `1px solid ${primaryColor}22`, color: muted }}
+                style={{
+                  border: `1px solid ${primaryColor}22`,
+                  color: muted,
+                }}
                 data-hover
                 onMouseEnter={e => {
                   const el = e.currentTarget as HTMLElement;
@@ -1391,7 +1368,34 @@ function ContactSection({ isDark, primaryColor, isTouch }: { isDark: boolean; pr
                   el.style.color = muted;
                   el.style.borderColor = `${primaryColor}22`;
                 }}>
-                <ArrowUpRight size={14} strokeWidth={1.4} />
+                <Linkedin size={14} strokeWidth={1.4} />
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.3} disabled={isTouch}>
+              <a href="https://linktr.ee/yikian44"
+                aria-label="Linktree"
+                title="Linktree"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-9 h-9 transition-all duration-300 overflow-hidden relative group"
+                style={{
+                  border: `1px solid ${primaryColor}22`,
+                }}
+                data-hover
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = `${primaryColor}66`;
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = `${primaryColor}22`;
+                }}>
+                <img
+                  src="/linktree-qr.png"
+                  alt="Linktree QR Code"
+                  className="w-full h-full object-cover"
+                  style={{ filter: 'invert(0)', opacity: 0.85 }}
+                />
               </a>
             </Magnetic>
           </div>

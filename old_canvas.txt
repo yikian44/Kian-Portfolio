@@ -1,0 +1,99 @@
+function HeroCanvas({ isDark, scrollProgressRef }: { isDark: boolean; scrollProgressRef?: React.MutableRefObject<number> }) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const lineMatRefs = useRef<THREE.LineBasicMaterial[]>([]);
+  const pMatRef = useRef<THREE.PointsMaterial | null>(null);
+
+  useEffect(() => {
+    const el = mountRef.current;
+    if (!el) return;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(52, el.offsetWidth / el.offsetHeight, 0.1, 200);
+    camera.position.z = 24;
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(el.offsetWidth, el.offsetHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    el.appendChild(renderer.domElement);
+
+    const mkMat = (op: number) => {
+      const m = new THREE.LineBasicMaterial({ color: 0x1640d3, transparent: true, opacity: op });
+      lineMatRefs.current.push(m);
+      return m;
+    };
+    const ico = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(7, 1)), mkMat(0.28));
+    ico.position.set(4, 1, 0); scene.add(ico);
+    const oct = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.OctahedronGeometry(3.5)), mkMat(0.16));
+    oct.position.set(-8, -3, -4); scene.add(oct);
+    const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2, 2, 2)), mkMat(0.22));
+    box.position.set(-5, 5, -2); scene.add(box);
+
+    const pPos = new Float32Array(280 * 3);
+    for (let i = 0; i < pPos.length; i++) pPos[i] = (Math.random() - 0.5) * 50;
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    pMatRef.current = new THREE.PointsMaterial({ color: 0x1640d3, size: 0.07, transparent: true, opacity: 0.5 });
+    scene.add(new THREE.Points(pGeo, pMatRef.current));
+
+    const target = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
+    const onMouse = (e: globalThis.MouseEvent) => {
+      target.x = (e.clientX / window.innerWidth - 0.5) * 2.5;
+      target.y = (e.clientY / window.innerHeight - 0.5) * -1.5;
+    };
+    window.addEventListener("mousemove", onMouse);
+
+    let animId: number;
+    const timer = new THREE.Timer();
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      timer.update();
+      const t = timer.getElapsed();
+
+      if (scrollProgressRef) {
+        const prog = scrollProgressRef.current;
+        const fade = Math.max(0, 1 - prog * 1.4);
+        const scale = Math.max(0.001, 1 - prog * 0.35);
+
+        ico.scale.setScalar(scale);
+        oct.scale.setScalar(scale);
+        box.scale.setScalar(scale);
+
+        if (lineMatRefs.current[0]) lineMatRefs.current[0].opacity = fade * 0.28;
+        if (lineMatRefs.current[1]) lineMatRefs.current[1].opacity = fade * 0.16;
+        if (lineMatRefs.current[2]) lineMatRefs.current[2].opacity = fade * 0.22;
+        if (pMatRef.current) pMatRef.current.opacity = fade * 0.5;
+      }
+
+      ico.rotation.set(t * 0.12, t * 0.18, 0);
+      oct.rotation.set(t * 0.1, t * 0.22, 0);
+      box.rotation.set(t * 0.3, t * 0.2, 0);
+      cur.x += (target.x - cur.x) * 0.04;
+      cur.y += (target.y - cur.y) * 0.04;
+      camera.position.set(cur.x, cur.y, 24);
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const ro = new ResizeObserver(() => {
+      camera.aspect = el.offsetWidth / el.offsetHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(el.offsetWidth, el.offsetHeight);
+    });
+    ro.observe(el);
+
+    return () => {
+      cancelAnimationFrame(animId); timer.dispose(); ro.disconnect();
+      window.removeEventListener("mousemove", onMouse);
+      renderer.dispose();
+      renderer.domElement.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const hex = isDark ? 0x5b86ef : 0x1640d3;
+    lineMatRefs.current.forEach(m => m.color.setHex(hex));
+    if (pMatRef.current) pMatRef.current.color.setHex(hex);
+  }, [isDark]);
+
+  return <div ref={mountRef} className="hero-canvas absolute inset-0 z-0" />;
+}
