@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- Dark background -->
-  <rect width="32" height="32" rx="6" fill="#0c0f1e"/>
-  <!-- Letter K in portfolio purple -->
+  <!-- Light background -->
+  <rect width="32" height="32" fill="#e8e4e6"/>
+  <!-- Bold K using path for thick condensed sans-serif style -->
   <text
     x="16"
-    y="23"
-    font-family="Georgia, 'Times New Roman', serif"
-    font-size="22"
-    font-weight="700"
-    fill="#863bff"
+    y="27"
+    font-family="'Arial Black', 'Impact', 'Haettenschweiler', sans-serif"
+    font-size="30"
+    font-weight="900"
+    fill="#111111"
     text-anchor="middle"
     dominant-baseline="auto"
-    letter-spacing="-1"
+    letter-spacing="-2"
   >K</text>
 </svg>
