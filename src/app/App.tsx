@@ -213,12 +213,15 @@ const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!%";
 /* ─── Lenis ─────────────────────────────────────────────────── */
 function useLenis() {
   useEffect(() => {
+    // Reset native scroll before Lenis picks it up as starting position
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     const lenis = new Lenis({
       duration: 1.25,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
     (window as any).lenis = lenis;
-    // Force scroll to top on every page load / refresh
+    // Force Lenis scroll to top on every page load / refresh
     lenis.scrollTo(0, { immediate: true });
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);

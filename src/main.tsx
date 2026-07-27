@@ -3,11 +3,14 @@
   import App from "./app/App.tsx";
   import "./styles/index.css";
 
-  // Always start at the top on page load / refresh
+  // Disable browser scroll restoration so it never restores scroll position
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
-  window.scrollTo(0, 0);
+  // Force native scroll to top immediately (before React / Lenis mount)
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" } as ScrollToOptions);
 
   createRoot(document.getElementById("root")!).render(<App />);
   
