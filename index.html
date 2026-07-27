@@ -21,6 +21,20 @@
           scrollbar-width: none !important;
         }
       </style>
+      <!-- Must be a plain (non-module) script so it runs synchronously during
+           HTML parsing — BEFORE the browser has a chance to restore scroll position.
+           Module scripts (type="module") are deferred and run too late. -->
+      <script>
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+        document.addEventListener('DOMContentLoaded', function () {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        });
+      </script>
       
     </head>
 
