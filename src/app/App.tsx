@@ -1249,14 +1249,6 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
           <p className="font-body text-base leading-[1.9] mb-6" style={{ color: bodyColor }}>
             Hi, I'm Gan Yi Kian, a Creative Media designer based in Selangor, Malaysia, specializing in UI/UX design. I create thoughtful, human-centred digital experiences through simplicity and purposeful design.
           </p>
-          <div className="mt-14 relative w-24 h-24" style={{ opacity: 0.13, color: primaryColor }}>
-            <div className="absolute inset-0 border border-current" />
-            <div className="absolute top-3.5 left-3.5 right-3.5 bottom-3.5 border border-current" />
-            <div className="absolute inset-0 flex items-center"><div className="w-full h-px bg-current" /></div>
-            <div className="absolute inset-0 flex justify-center"><div className="h-full w-px bg-current" /></div>
-            <div className="absolute top-1/2 left-1/2 w-2.5 h-2.5 border border-current"
-              style={{ transform: "translate(-50%,-50%) rotate(45deg)" }} />
-          </div>
         </div>
 
         <div className="about-right">
