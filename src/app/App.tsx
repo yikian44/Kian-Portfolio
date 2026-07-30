@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, MouseEvent, createContext, useContext, MutableRefObject } from "react";
-import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers } from "lucide-react";
+import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers, Layout, Palette, Play, Smartphone, Gamepad2, Flame, Cpu, Sparkles, Terminal, Box, Code2 } from "lucide-react";
 import { motion } from "motion/react";
 import * as THREE from "three";
 import { gsap } from "gsap";
@@ -830,24 +830,20 @@ function Hero({ isDark, primaryColor }: { isDark: boolean; primaryColor: string 
   }, []);
 
   return (
-    <section id="hero" className="relative z-10 min-h-screen flex flex-col justify-between px-8 md:px-14 pt-28 pb-10">
+    <section id="hero" className="relative z-10 min-h-screen flex flex-col justify-between px-8 md:px-14 pt-20 pb-10">
       {/* Three.js canvas — scroll progress drives fade/scale */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <HeroCanvas isDark={isDark} scrollProgressRef={scrollProgressRef} />
       </div>
 
       {/* Top meta */}
-      <div className="hero-meta relative z-10 flex justify-between items-start mt-4">
+      <div className="hero-meta relative z-10 flex justify-between items-start mt-0">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: primaryColor }}>
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>
             Portfolio — 2026
           </p>
-          <TypewriterText color={muted} />
         </div>
         <div className="text-right flex flex-col items-end gap-1.5">
-          <p className="font-mono text-[9px] uppercase tracking-[0.28em]" style={{ color: muted }}>
-            Open to opportunities
-          </p>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: primaryColor }} />
             <span className="font-mono text-[9px]" style={{ color: primaryColor }}>Available now</span>
@@ -883,8 +879,7 @@ function Hero({ isDark, primaryColor }: { isDark: boolean; primaryColor: string 
           ))}
         </div>
         <div className="hero-bottom flex items-center justify-end mt-5">
-          <div className="flex items-center gap-2" style={{ color: muted }}>
-            <span className="font-mono text-[9px] uppercase tracking-widest">Scroll</span>
+          <div className="flex items-center gap-2" style={{ color: primaryColor }}>
             <motion.div animate={{ y: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}>
               <ChevronDown size={14} strokeWidth={1.2} />
             </motion.div>
@@ -940,7 +935,7 @@ function ProjectCard({ project, isDark, primaryColor, isTouch }: {
       data-hover
     >
       {/* Image */}
-      <div className="relative overflow-hidden" style={{ flex: "0 0 56%" }}>
+      <div className="relative overflow-hidden flex-1" style={{ minHeight: 0 }}>
         <img src={project.img} alt={project.title} className="w-full h-full object-cover"
           style={{
             transform: hovered ? "scale(1.04)" : "scale(1)",
@@ -951,48 +946,26 @@ function ProjectCard({ project, isDark, primaryColor, isTouch }: {
             ? "linear-gradient(to bottom, transparent 60%, rgba(12,15,30,0.85))"
             : "linear-gradient(to bottom, transparent 60%, rgba(212,204,208,0.9))",
         }} />
-        <span className="absolute top-5 left-5 font-mono text-[10px] tracking-widest" style={{ color: primaryColor }}>
-          {project.idx}
-        </span>
       </div>
 
       {/* Info */}
-      <div className="flex flex-col justify-between flex-1 p-7">
-        <div>
-          <h3 className="font-display font-bold leading-none mb-2"
-            style={{
-              fontSize: "clamp(1.6rem, 2.8vw, 2.4rem)", letterSpacing: "-0.02em",
-              color: hovered ? primaryColor : textFg,
-              transition: "color 0.3s ease", fontVariantNumeric: "tabular-nums",
-            }}>
-            {title}
-          </h3>
-          <p className="font-mono text-[9px] uppercase tracking-[0.22em]" style={{ color: muted }}>
-            {project.category}
-          </p>
-        </div>
-        <div>
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {project.tags.map(tag => (
-              <span key={tag} className="font-mono text-[8px] uppercase tracking-widest px-2 py-1"
-                style={{
-                  border: `1px solid ${hovered ? primaryColor + "55" : primaryColor + "22"}`,
-                  color: hovered ? primaryColor : muted,
-                  transition: "border-color 0.3s, color 0.3s",
-                }}>
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[9px]" style={{ color: muted }}>{project.year}</span>
-            <div style={{
-              color: hovered ? primaryColor : muted,
-              transform: hovered ? "translateX(5px)" : "translateX(0)",
-              transition: "transform 0.3s ease, color 0.3s ease",
-            }}>
-              <ArrowRight size={16} strokeWidth={1.1} />
-            </div>
+      <div className="p-7 flex flex-col gap-4 flex-shrink-0">
+        <h3 className="font-display font-bold leading-none"
+          style={{
+            fontSize: "clamp(1.6rem, 2.8vw, 2.4rem)", letterSpacing: "-0.02em",
+            color: hovered ? primaryColor : textFg,
+            transition: "color 0.3s ease", fontVariantNumeric: "tabular-nums",
+          }}>
+          {title}
+        </h3>
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-[9px]" style={{ color: muted }}>{project.year}</span>
+          <div style={{
+            color: hovered ? primaryColor : muted,
+            transform: hovered ? "translateX(5px)" : "translateX(0)",
+            transition: "transform 0.3s ease, color 0.3s ease",
+          }}>
+            <ArrowRight size={16} strokeWidth={1.1} />
           </div>
         </div>
       </div>
@@ -1034,29 +1007,15 @@ function MobileProjectCard({ project, isDark, primaryColor }: {
             ? "linear-gradient(to bottom, transparent 50%, rgba(12,15,30,0.8))"
             : "linear-gradient(to bottom, transparent 50%, rgba(212,204,208,0.85))",
         }} />
-        <span className="absolute top-4 left-4 font-mono text-[10px] tracking-widest" style={{ color: primaryColor }}>
-          {project.idx}
-        </span>
         <span className="absolute bottom-4 right-4 font-mono text-[9px]" style={{ color: muted }}>
           {project.year}
         </span>
       </div>
       <div className="p-5">
-        <h3 className="font-display font-bold leading-none mb-1.5"
+        <h3 className="font-display font-bold leading-none mb-1"
           style={{ fontSize: "clamp(1.4rem, 5vw, 1.8rem)", letterSpacing: "-0.02em", color: textFg }}>
           {project.title}
         </h3>
-        <p className="font-mono text-[9px] uppercase tracking-widest mb-4" style={{ color: muted }}>
-          {project.category}
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          {project.tags.map(tag => (
-            <span key={tag} className="font-mono text-[8px] uppercase tracking-widest px-2 py-1"
-              style={{ border: `1px solid ${primaryColor}28`, color: muted }}>
-              {tag}
-            </span>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -1148,7 +1107,7 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
           <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>01</span>
           <h2 className="font-display font-bold"
             style={{ fontSize: "clamp(1.6rem, 6vw, 2rem)", letterSpacing: "-0.02em", color: textFg }}>
-            Selected Work
+            Project
           </h2>
         </div>
         <div className="h-px mb-8" style={{ background: primaryColor, opacity: 0.18 }} />
@@ -1165,7 +1124,7 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
           <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>01</span>
           <h2 className="font-display font-bold"
             style={{ fontSize: "clamp(1rem, 2vw, 1.4rem)", letterSpacing: "-0.02em", color: textFg }}>
-            Selected Work
+            Project
           </h2>
         </div>
         <div ref={trackRef} className="flex gap-px items-center"
@@ -1192,6 +1151,49 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
 
 /* ─── About Section ─────────────────────────────────────────
    Stats animate from 0 via GSAP counter on scroll.          */
+const FigmaIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/figma-logo.png" alt="Figma" className={`${className} object-contain`} />
+);
+
+const ReactIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <svg className={className} viewBox="-11.5 -10.23174 23 20.46348" fill="none" stroke="currentColor" strokeWidth="1.3">
+    <circle cx="0" cy="0" r="2" fill="currentColor" />
+    <g stroke="currentColor">
+      <ellipse rx="11" ry="4.2" />
+      <ellipse rx="11" ry="4.2" transform="rotate(60)" />
+      <ellipse rx="11" ry="4.2" transform="rotate(120)" />
+    </g>
+  </svg>
+);
+
+const AdobeIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/adobe-logo.png" alt="Adobe" className={`${className} object-contain`} />
+);
+
+const LottieIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/lottiefiles-logo.png" alt="LottieFiles" className={`${className} object-contain`} />
+);
+
+const FlutterFlowIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/flutterflow-logo.png" alt="FlutterFlow" className={`${className} object-contain`} />
+);
+
+const FirebaseIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/firebase-logo.png" alt="Firebase" className={`${className} object-contain`} />
+);
+
+const GodotIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/godot-logo.png" alt="Godot" className={`${className} object-contain`} />
+);
+
+const UnityIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/unity-logo.png" alt="Unity" className={`${className} object-contain`} />
+);
+
+const AntigravityIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <img src="/antigravity-logo.png" alt="Antigravity" className={`${className} object-contain`} />
+);
+
 function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor: string }) {
   const sectionRef = useRef<HTMLElement>(null);
   const textFg = isDark ? "#dce3f6" : "#0f0c0e";
@@ -1199,9 +1201,15 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
   const muted = isDark ? "rgba(220,227,246,0.35)" : "rgba(15,12,14,0.42)";
 
   const skills = [
-    "UI/UX & Interaction Design", "Creative Media & Visual Design", "Figma",
-    "Adobe Creative Cloud", "LottieFiles", "React & Framer Motion", "WebGL / Three.js",
-    "FlutterFlow", "Godot", "Firebase", "Frontend Architecture", "AI Assistant Design", "Vibe Coding"
+    { name: "Figma", icon: <FigmaIcon className="w-3.5 h-3.5" /> },
+    { name: "Adobe Creative Cloud", icon: <AdobeIcon className="w-3.5 h-3.5" /> },
+    { name: "LottieFiles", icon: <LottieIcon className="w-3.5 h-3.5" /> },
+    { name: "FlutterFlow", icon: <FlutterFlowIcon className="w-3.5 h-3.5" /> },
+    { name: "Godot", icon: <GodotIcon className="w-3.5 h-3.5" /> },
+    { name: "Unity", icon: <UnityIcon className="w-3.5 h-3.5" /> },
+    { name: "Firebase", icon: <FirebaseIcon className="w-3.5 h-3.5" /> },
+    { name: "AI Assistant Design", icon: <Sparkles className="w-3.5 h-3.5" /> },
+    { name: "Antigravity", icon: <AntigravityIcon className="w-3.5 h-3.5" /> }
   ];
 
   useEffect(() => {
@@ -1239,7 +1247,7 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
             </h2>
           </div>
           <p className="font-body text-base leading-[1.9] mb-6" style={{ color: bodyColor }}>
-            I specialize in UI/UX design and building stunning, high-precision web applications. My focus is on integrating clean vector aesthetics, highly structured layouts, and fluid micro-animations into functional digital products.
+            Hi, I'm Gan Yi Kian, a Creative Media designer based in Selangor, Malaysia, specializing in UI/UX design. I create thoughtful, human-centred digital experiences through simplicity and purposeful design.
           </p>
           <div className="mt-14 relative w-24 h-24" style={{ opacity: 0.13, color: primaryColor }}>
             <div className="absolute inset-0 border border-current" />
@@ -1259,13 +1267,13 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
               <div className="relative pl-4" style={{ borderLeft: `1px solid ${primaryColor}22` }}>
                 <div className="absolute top-1.5 -left-1 w-2 h-2 rounded-full" style={{ background: primaryColor }} />
                 <p className="font-mono text-[8px] uppercase tracking-widest mb-1.5" style={{ color: muted }}>2024 - 2027</p>
-                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>Bachelor in Creative Media</h4>
+                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>Bachelor of Design (Honours) in Creative Media - UI/UX</h4>
                 <p className="font-body text-[11px]" style={{ color: muted }}>Taylor's University</p>
               </div>
               <div className="relative pl-4" style={{ borderLeft: `1px solid ${primaryColor}22` }}>
                 <div className="absolute top-1.5 -left-1 w-2 h-2 rounded-full bg-transparent border" style={{ borderColor: primaryColor }} />
                 <p className="font-mono text-[8px] uppercase tracking-widest mb-1.5" style={{ color: muted }}>2017 - 2023</p>
-                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>High School / Secondary Education</h4>
+                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>High School</h4>
                 <p className="font-body text-[11px]" style={{ color: muted }}>Chung Hua Independent High School Klang</p>
               </div>
             </div>
@@ -1274,12 +1282,13 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
           <p className="font-mono text-[9px] uppercase tracking-[0.28em] mb-4" style={{ color: primaryColor }}>Creative Toolkit</p>
           <div className="flex flex-wrap gap-2">
             {skills.map(skill => (
-              <span key={skill} className="skill-tag font-mono text-[9px] uppercase tracking-widest px-3 py-1.5 cursor-default"
+              <span key={skill.name} className="skill-tag font-mono text-[9px] uppercase tracking-widest px-3 py-1.5 cursor-default flex items-center gap-2"
                 style={{ border: `1px solid ${primaryColor}22`, color: muted, transition: "border-color 0.3s, color 0.3s" }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = `${primaryColor}88`; el.style.color = primaryColor; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = `${primaryColor}22`; el.style.color = muted; }}
                 data-hover>
-                {skill}
+                {skill.icon}
+                <span>{skill.name}</span>
               </span>
             ))}
           </div>
