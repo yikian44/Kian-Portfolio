@@ -11,6 +11,7 @@ export interface Project {
   category: string;
   year: string;
   role: string;
+  tools?: string;
   duration: string;
   img: string;
   heroImg: string;
@@ -22,6 +23,7 @@ export interface Project {
   challenge: string;
   approach: string[];
   outcome: string;
+  gallery?: string[];
   metrics: ProjectMetric[];
 }
 
@@ -33,16 +35,23 @@ export const PROJECTS: Project[] = [
     title: "JALAN SQUARE",
     category: "UI / UX",
     year: "2026",
-    role: "Designer",
-    duration: "4 weeks",
+    role: "UI/UX Designer",
+    tools: "Figma",
+    duration: "September 2025 - February 2026",
     img: "/jalan-square-cover.jpg",
     heroImg: "/jalan-square-cover.jpg",
     secondImg: "/jalan-square-cover.jpg",
+    gallery: [
+      "/jalan-square-cover.jpg",
+      "/imperfect-vessel-cover.png",
+      "/lobster-atlas-cover-2.jpg",
+      "/daily-sedap.jpg",
+    ],
     tags: ["UI/UX", "Interactive"],
-    tagline: "Interactive spatial UI prototype exploring modern digital interactions.",
+    tagline: "Let every group member participate in the planning process and make Malaysian group trips easier, fairer and more organized.",
     liveUrl: "https://www.figma.com/proto/UvyZ4mWLooxRDjwbhJFRAj/Jalan-Square?node-id=451-610&t=c2dQCzUzX64cykse-1",
-    overview: "Jalan Square is an interactive design prototype created to explore spatial UI elements and responsive user navigation.",
-    challenge: "Designing an intuitive, fluid interactive layout within constrained viewports while preserving clarity.",
+    overview: "Jalan Square is a mobile application that provides a collaborative travel-planning experience for young Malaysian travellers, helping groups discover local destinations, share ideas, vote and organize their trips together.\n\nThis is a UI/UX project focusing on localized travel content, group decision-making and shared trip organization.",
+    challenge: "Planning a group trip often requires switching between WhatsApp, Google Maps, spreadsheets and multiple booking applications.\n\nThis causes information to become scattered, decisions to take longer, and most planning responsibilities to fall on one person.\n\nThis is mainly caused by:\n(1) Fragmented planning tools\n(2) Unclear group decisions\n(3) Unequal participation\n(4) Limited localized travel inspiration",
     approach: ["Figma Prototyping", "Interactive Spatial UI"],
     outcome: "Successfully delivered an interactive prototype validated through user feedback.",
     metrics: [{ value: "100%", label: "Completion" }],
@@ -54,11 +63,18 @@ export const PROJECTS: Project[] = [
     title: "IMPERFECT VESSEL",
     category: "Web Experience",
     year: "2026",
-    role: "Designer & Developer",
-    duration: "4 weeks",
+    role: "UI/UX Designer",
+    tools: "Figma",
+    duration: "September 2025 - February 2026",
     img: "/imperfect-vessel-cover.png",
     heroImg: "/imperfect-vessel-cover.png",
     secondImg: "/imperfect-vessel-cover.png",
+    gallery: [
+      "/imperfect-vessel-cover.png",
+      "/jalan-square-cover.jpg",
+      "/lobster-atlas-cover-2.jpg",
+      "/daily-sedap.jpg",
+    ],
     tags: ["Web Design", "Development"],
     tagline: "Creative web story experience blending typography and interactive visuals.",
     liveUrl: "https://yikian44.github.io/Imperfect-vessel-1/",
@@ -75,11 +91,18 @@ export const PROJECTS: Project[] = [
     title: "DAILY SEDAP",
     category: "Content & Video",
     year: "2025",
-    role: "Content Creator",
-    duration: "Ongoing",
+    role: "UI/UX Designer",
+    tools: "Figma",
+    duration: "September 2025 - February 2026",
     img: "/daily-sedap.jpg",
     heroImg: "/daily-sedap.jpg",
     secondImg: "/daily-sedap.jpg",
+    gallery: [
+      "/daily-sedap.jpg",
+      "/jalan-square-cover.jpg",
+      "/imperfect-vessel-cover.png",
+      "/lobster-atlas-cover-2.jpg",
+    ],
     tags: ["Social Media", "Video"],
     tagline: "Engaging culinary TikTok content series highlighting local food culture.",
     liveUrl: "https://www.tiktok.com/@dailysedap?refer=creator_embed",
@@ -96,11 +119,18 @@ export const PROJECTS: Project[] = [
     title: "LOBSTER ATLAS",
     category: "Interactive Atlas",
     year: "2025",
-    role: "Designer & Developer",
-    duration: "4 weeks",
+    role: "UI/UX Designer",
+    tools: "Figma",
+    duration: "September 2025 - February 2026",
     img: "/lobster-atlas-cover-2.jpg",
     heroImg: "/lobster-atlas-cover-2.jpg",
     secondImg: "/lobster-atlas-cover-2.jpg",
+    gallery: [
+      "/lobster-atlas-cover-2.jpg",
+      "/imperfect-vessel-cover.png",
+      "/jalan-square-cover.jpg",
+      "/daily-sedap.jpg",
+    ],
     tags: ["Web Design", "Development"],
     tagline: "Interactive species atlas mapping lobster biology and geographic distribution.",
     liveUrl: "https://lobsteryikian.netlify.app/",

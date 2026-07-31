@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useNavigate, Link, useOutletContext } from "react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Maximize2, X } from "lucide-react";
 import { PROJECTS } from "../data/projects";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,11 +13,161 @@ interface OutletCtx {
   isTouch: boolean;
 }
 
+/* ─── Smooth Pixel Brush Photo Card (No Artificial Colors + 32px Big Blocks + Line Interpolation) ─── */
+function PixelGlitchPhotoCard({ imgSrc, alt, borderColor }: {
+  imgSrc: string; alt: string; borderColor: string; primaryColor?: string; index?: number;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const blocksRef = useRef<Map<string, { col: number; row: number; life: number; shiftX: number }>>(new Map());
+  const lastMouseRef = useRef<{ x: number; y: number } | null>(null);
+  const animRef = useRef<number>(0);
+
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = imgSrc;
+    img.onload = () => { imageRef.current = img; };
+  }, [imgSrc]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const tileSize = 32; // 32px large chunky pixel block squares
+
+    const render = () => {
+      const container = containerRef.current;
+      const img = imageRef.current;
+
+      if (container && canvas && ctx && img) {
+        const rect = container.getBoundingClientRect();
+        if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
+          canvas.width = Math.floor(rect.width);
+          canvas.height = Math.floor(rect.height);
+        }
+
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const blocks = blocksRef.current;
+        blocks.forEach((block, key) => {
+          block.life -= 0.035;
+          if (block.life <= 0) {
+            blocks.delete(key);
+            return;
+          }
+
+          const bx = block.col * tileSize;
+          const by = block.row * tileSize;
+          const opacity = Math.sin(block.life * Math.PI);
+
+          // Calculate source rectangle from original photo
+          const sx = (bx / w) * img.width;
+          const sy = (by / h) * img.height;
+          const sw = (tileSize / w) * img.width;
+          const sh = (tileSize / h) * img.height;
+
+          ctx.save();
+          ctx.globalAlpha = opacity * 0.95;
+
+          // Draw sampled photo image block with a slight horizontal pixel shift
+          const renderX = bx + block.shiftX * opacity;
+          ctx.drawImage(img, sx, sy, sw, sh, renderX, by, tileSize - 1, tileSize - 1);
+
+          ctx.restore();
+        });
+      }
+      animRef.current = requestAnimationFrame(render);
+    };
+
+    animRef.current = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(animRef.current);
+  }, []);
+
+  const addTilesAlongLine = (x0: number, y0: number, x1: number, y1: number) => {
+    const tileSize = 32;
+    const dist = Math.hypot(x1 - x0, y1 - y0);
+    const steps = Math.max(1, Math.ceil(dist / 8));
+    const blocks = blocksRef.current;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const curX = x0 + (x1 - x0) * t;
+      const curY = y0 + (y1 - y0) * t;
+
+      const centerCol = Math.floor(curX / tileSize);
+      const centerRow = Math.floor(curY / tileSize);
+
+      for (let dc = -1; dc <= 1; dc++) {
+        for (let dr = -1; dr <= 1; dr++) {
+          const col = centerCol + dc;
+          const row = centerRow + dr;
+          const key = `${col}_${row}`;
+
+          if (!blocks.has(key)) {
+            blocks.set(key, {
+              col,
+              row,
+              life: 0.9 + Math.random() * 0.25,
+              shiftX: (Math.random() - 0.5) * 14,
+            });
+          }
+        }
+      }
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const r = containerRef.current.getBoundingClientRect();
+    const mx = e.clientX - r.left;
+    const my = e.clientY - r.top;
+
+    if (lastMouseRef.current) {
+      addTilesAlongLine(lastMouseRef.current.x, lastMouseRef.current.y, mx, my);
+    } else {
+      addTilesAlongLine(mx, my, mx, my);
+    }
+    lastMouseRef.current = { x: mx, y: my };
+  };
+
+  const handleMouseLeave = () => {
+    lastMouseRef.current = null;
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="w-full relative overflow-hidden group cursor-crosshair shadow-lg"
+      style={{ border: `1px solid ${borderColor}` }}
+    >
+      <img
+        src={imgSrc}
+        alt={alt}
+        className="w-full object-cover block"
+        style={{ height: "clamp(260px, 44vw, 540px)" }}
+      />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none z-10"
+      />
+    </div>
+  );
+}
+
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { isDark, primaryColor } = useOutletContext<OutletCtx>();
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const project = PROJECTS.find((p) => p.slug === slug);
   const projectIndex = PROJECTS.findIndex((p) => p.slug === slug);
@@ -122,51 +272,14 @@ export default function ProjectDetail() {
           <span className="font-mono text-[9px] uppercase tracking-[0.28em]">Portfolio</span>
         </Link>
 
-        {/* View project link — top right */}
-        <a
-          href={project.liveUrl || project.tagline.replace('Live Preview: ', '')}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute top-28 right-8 md:right-14 flex items-center gap-2 z-10 transition-all duration-300"
-          style={{
-            color: "rgba(255,255,255,0.85)",
-            background: "rgba(0,0,0,0.28)",
-            backdropFilter: "blur(8px)",
-            padding: "6px 12px 6px 12px",
-            border: "1px solid rgba(255,255,255,0.12)",
-          }}
-          onMouseEnter={e => {
-            const el = e.currentTarget as HTMLElement;
-            el.style.color = "#fff";
-            el.style.background = `${primaryColor}cc`;
-            el.style.borderColor = primaryColor;
-          }}
-          onMouseLeave={e => {
-            const el = e.currentTarget as HTMLElement;
-            el.style.color = "rgba(255,255,255,0.85)";
-            el.style.background = "rgba(0,0,0,0.28)";
-            el.style.borderColor = "rgba(255,255,255,0.12)";
-          }}
-        >
-          <span className="font-mono text-[9px] uppercase tracking-[0.28em]">View Project</span>
-          <ArrowUpRight size={13} strokeWidth={1.3} />
-        </a>
-
         {/* Hero content — bottom */}
         <div className="pd-hero-content absolute bottom-0 left-0 right-0 px-8 md:px-14 pb-10">
-          <span className="font-mono text-[9px] uppercase tracking-[0.3em] block mb-3"
-            style={{ color: isDark ? primaryColor : "#8faaff" }}>
-            {project.idx} — {project.category}
-          </span>
           <h1
-            className="font-display font-bold leading-[0.88] mb-4"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)", letterSpacing: "-0.025em", color: "#ffffff", textShadow: "0 2px 12px rgba(0,0,0,0.2)" }}
+            className="font-display font-bold leading-[0.88] mb-0"
+            style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)", letterSpacing: "-0.02em", color: "#ffffff", textShadow: "0 2px 12px rgba(0,0,0,0.2)" }}
           >
             {project.title}
           </h1>
-          <p className="font-body text-base max-w-xl" style={{ color: "rgba(255, 255, 255, 0.78)" }}>
-            {project.tagline}
-          </p>
         </div>
 
         {/* Blueprint corner marks */}
@@ -178,7 +291,7 @@ export default function ProjectDetail() {
         ))}
       </div>
 
-      {/* ── Meta row ─────────────────────────────────────── */}
+      {/* ── Meta row (Category, Role, Tools, Duration) ── */}
       <div
         className="grid grid-cols-2 md:grid-cols-4 border-b"
         style={{ borderColor }}
@@ -186,18 +299,18 @@ export default function ProjectDetail() {
         {[
           { label: "Category", value: project.category },
           { label: "Role", value: project.role },
-          { label: "Year", value: project.year },
+          { label: "Tools", value: project.tools || "Figma" },
           { label: "Duration", value: project.duration },
         ].map((item, i) => (
           <div
             key={i}
-            className="pd-meta-item px-8 md:px-14 py-6 border-r last:border-r-0"
+            className="pd-meta-item px-6 md:px-10 py-6 border-r last:border-r-0"
             style={{ borderColor }}
           >
             <p className="font-mono text-[8px] uppercase tracking-[0.25em] mb-1.5" style={{ color: muted }}>
               {item.label}
             </p>
-            <p className="font-body text-sm" style={{ color: textFg }}>{item.value}</p>
+            <p className="font-body text-xs md:text-sm font-medium" style={{ color: textFg }}>{item.value}</p>
           </div>
         ))}
       </div>
@@ -205,8 +318,8 @@ export default function ProjectDetail() {
       {/* ── Content ──────────────────────────────────────── */}
       <div ref={contentRef} className="px-8 md:px-14">
 
-        {/* Overview */}
-        <section className="pd-section py-16 md:py-20 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 md:gap-16">
+        {/* 01 — Overview */}
+        <section className="pd-section py-10 md:py-12 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 md:gap-16">
           <div>
             <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>01</span>
             <h2 className="font-display font-bold mt-1"
@@ -214,89 +327,75 @@ export default function ProjectDetail() {
               Overview
             </h2>
           </div>
-          <p className="font-body text-base leading-[1.95]" style={{ color: bodyColor }}>
+          <p className="font-body text-sm md:text-base leading-[1.85] whitespace-pre-line" style={{ color: bodyColor }}>
             {project.overview}
           </p>
         </section>
 
-        <div className="pd-rule h-px" style={{ background: primaryColor, opacity: 0.12 }} />
-
-        {/* Full-width image */}
-        <div className="pd-section py-12 md:py-16">
-          <div className="relative overflow-hidden" style={{ border: `1px solid ${borderColor}` }}>
-            <img
-              src={project.secondImg}
-              alt={`${project.title} — process`}
-              className="w-full object-cover"
-              style={{
-                height: "clamp(240px, 40vw, 520px)",
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="pd-rule h-px" style={{ background: primaryColor, opacity: 0.12 }} />
-
-        {/* Challenge */}
-        <section className="pd-section py-16 md:py-20 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 md:gap-16">
+        {/* 02 — Problem Statement */}
+        <section className="pd-section py-10 md:py-12 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 md:gap-16">
           <div>
             <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>02</span>
             <h2 className="font-display font-bold mt-1"
               style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)", letterSpacing: "-0.02em", color: textFg }}>
-              The Challenge
+              Problem Statement
             </h2>
           </div>
-          <p className="font-body text-base leading-[1.95]" style={{ color: bodyColor }}>
+          <p className="font-body text-sm md:text-base leading-[1.85] whitespace-pre-line" style={{ color: bodyColor }}>
             {project.challenge}
           </p>
         </section>
 
-        <div className="pd-rule h-px" style={{ background: primaryColor, opacity: 0.12 }} />
-
-        {/* Approach */}
-        <section className="pd-section py-16 md:py-20 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 md:gap-16">
+        {/* 03 — Goal */}
+        <section className="pd-section py-10 md:py-12 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 md:gap-16">
           <div>
             <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>03</span>
             <h2 className="font-display font-bold mt-1"
               style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)", letterSpacing: "-0.02em", color: textFg }}>
-              Approach
+              Goal
             </h2>
           </div>
-          <div className="flex flex-col gap-0">
-            {project.approach.map((step, i) => (
-              <div
-                key={i}
-                className="flex items-baseline gap-4 py-4 border-b"
-                style={{ borderColor }}
-              >
-                <span className="font-mono text-[9px] flex-shrink-0" style={{ color: primaryColor }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p className="font-body text-sm leading-relaxed" style={{ color: bodyColor }}>
-                  {step}
-                </p>
-              </div>
-            ))}
-          </div>
+          <p className="font-body text-sm md:text-base leading-[1.85] whitespace-pre-line" style={{ color: bodyColor }}>
+            {project.tagline}
+          </p>
         </section>
 
-        <div className="pd-rule h-px" style={{ background: primaryColor, opacity: 0.12 }} />
+        <div className="pd-rule h-px w-full" style={{ background: primaryColor, opacity: 0.22 }} />
 
-        {/* Outcome */}
-        <section className="pd-section py-16 md:py-20">
-          <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 md:gap-16">
-            <div>
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>04</span>
-              <h2 className="font-display font-bold mt-1"
-                style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)", letterSpacing: "-0.02em", color: textFg }}>
-                Outcome
-              </h2>
-            </div>
-            <p className="font-body text-base leading-[1.95]" style={{ color: bodyColor }}>
-              {project.outcome}
-            </p>
-          </div>
+        {/* ── Photo Showcase Section (Pixel Glitch Track Distortion) ── */}
+        <section className="pd-section py-10 md:py-14 flex flex-col items-center gap-8 w-full max-w-3xl mx-auto">
+          {(project.gallery && project.gallery.length > 0 ? project.gallery : [project.secondImg]).map((imgSrc, idx) => (
+            <PixelGlitchPhotoCard
+              key={idx}
+              index={idx}
+              imgSrc={imgSrc}
+              alt={`${project.title} — photo ${idx + 1}`}
+              borderColor={borderColor}
+              primaryColor={primaryColor}
+            />
+          ))}
         </section>
+
+        <div className="pd-rule h-px w-full" style={{ background: primaryColor, opacity: 0.22 }} />
+
+        {/* ── Bottom Action Row: View Project CTA ── */}
+        <div className="pd-section py-10 md:py-12 flex justify-end">
+          <a
+            href={project.liveUrl || project.tagline.replace('Live Preview: ', '')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-7 py-4 transition-all duration-300 font-mono text-[10px] uppercase tracking-[0.25em] group"
+            style={{
+              color: primaryColor,
+              border: `1px solid ${primaryColor}55`,
+              background: `${primaryColor}0d`,
+            }}
+            data-hover
+          >
+            <span>View Project</span>
+            <ArrowUpRight size={15} strokeWidth={1.3} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </div>
       </div>
 
       {/* ── Next project ─────────────────────────────────── */}

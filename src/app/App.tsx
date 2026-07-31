@@ -76,9 +76,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
 
       {/* Top label */}
       <div className="relative flex justify-between items-start">
-        <p className="pre-meta font-mono text-[9px] uppercase tracking-[0.3em] opacity-0" style={{ color: "#1640d3" }}>
-          Portfolio — 2026
-        </p>
+        <div />
         <p className="pre-meta font-mono text-[9px] uppercase tracking-widest opacity-0" style={{ color: "rgba(15,12,14,0.35)" }}>
           Loading
         </p>
@@ -103,7 +101,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
         {/* Progress */}
         <div className="mt-5 flex items-center gap-3">
           <p className="pre-meta font-mono text-[9px] uppercase tracking-widest opacity-0" style={{ color: "rgba(15,12,14,0.35)" }}>
-            UI/UX Designer
+            Welcome
           </p>
           <div className="flex-1 h-px" style={{ background: "rgba(15,12,14,0.12)" }}>
             <div className="pre-progress h-full" style={{ background: "#1640d3", opacity: 0.5 }} />
@@ -628,8 +626,9 @@ function DarkToggleIcon({ isDark }: { isDark: boolean }) {
   );
 }
 
-function Nav({ isDark, onToggleDark, primaryColor }: {
+function Nav({ isDark, onToggleDark, primaryColor, accentLabel, onCycleAccent }: {
   isDark: boolean; onToggleDark: () => void; primaryColor: string;
+  accentLabel: string; onCycleAccent: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -688,6 +687,23 @@ function Nav({ isDark, onToggleDark, primaryColor }: {
                   style={{ background: primaryColor }} />
               </button>
             ))}
+
+            {/* Low-key Blueprint Accent Switcher Easter Egg */}
+            <button
+              onClick={onCycleAccent}
+              title="Calibrate Blueprint Color Spec"
+              className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-1 rounded transition-all duration-300 flex items-center gap-1.5"
+              style={{
+                border: `1px solid ${primaryColor}33`,
+                color: primaryColor,
+                background: `${primaryColor}08`,
+              }}
+              data-hover
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: primaryColor }} />
+              <span>SPEC: {accentLabel}</span>
+            </button>
+
             <button onClick={onToggleDark} data-hover
               className="w-8 h-8 flex items-center justify-center"
               style={{ color: mutedColor }} aria-label="Toggle dark mode">
@@ -1072,8 +1088,19 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const textFg = isDark ? "#dce3f6" : "#0f0c0e";
   const muted = isDark ? "rgba(220,227,246,0.25)" : "rgba(15,12,14,0.25)";
+
+  const categories = ["ALL", "UI/UX", "WEB", "CONTENT"] as const;
+
+  const filteredProjects = PROJECTS.filter(p => {
+    if (selectedCategory === "ALL") return true;
+    if (selectedCategory === "UI/UX") return p.category.includes("UI / UX");
+    if (selectedCategory === "WEB") return p.category.includes("Web") || p.category.includes("Interactive");
+    if (selectedCategory === "CONTENT") return p.category.includes("Content") || p.category.includes("Video");
+    return true;
+  });
 
   useEffect(() => {
     const container = containerRef.current;
@@ -1091,28 +1118,47 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
         ease: "none",
         scrollTrigger: {
           trigger: container, start: "top top",
-          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          end: () => `+=${Math.max(0, track.scrollWidth - window.innerWidth)}`,
           pin: true, scrub: 1.2, invalidateOnRefresh: true,
         },
       });
     }, container);
     return () => { try { ctx.revert(); } catch {} };
-  }, []);
+  }, [selectedCategory]);
 
   return (
     <section id="work" ref={containerRef} className="relative z-10">
       {/* ── Mobile layout (hidden on md+) ── */}
       <div className="md:hidden px-6 pt-14 pb-16">
-        <div className="flex items-baseline gap-3 mb-5">
+        <div className="flex items-baseline gap-3 mb-4">
           <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>01</span>
           <h2 className="font-display font-bold"
             style={{ fontSize: "clamp(1.6rem, 6vw, 2rem)", letterSpacing: "-0.02em", color: textFg }}>
             Project
           </h2>
         </div>
+
+        {/* Category filters mobile */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className="font-mono text-[9px] uppercase tracking-widest px-3 py-1 transition-all duration-300"
+              style={{
+                border: `1px solid ${selectedCategory === cat ? primaryColor : (isDark ? "rgba(91,134,239,0.15)" : "rgba(22,64,211,0.15)")}`,
+                background: selectedCategory === cat ? `${primaryColor}18` : "transparent",
+                color: selectedCategory === cat ? primaryColor : (isDark ? "rgba(220,227,246,0.5)" : "rgba(15,12,14,0.5)"),
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         <div className="h-px mb-8" style={{ background: primaryColor, opacity: 0.18 }} />
         <div className="flex flex-col gap-3">
-          {PROJECTS.map(p => (
+          {filteredProjects.map(p => (
             <MobileProjectCard key={p.id} project={p} isDark={isDark} primaryColor={primaryColor} />
           ))}
         </div>
@@ -1120,21 +1166,43 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
 
       {/* ── Desktop layout (hidden below md) ── */}
       <div className="hidden md:block">
-        <div className="work-label-desktop absolute top-6 left-14 z-10 flex items-center gap-3" style={{ opacity: 0 }}>
-          <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>01</span>
-          <h2 className="font-display font-bold"
-            style={{ fontSize: "clamp(1rem, 2vw, 1.4rem)", letterSpacing: "-0.02em", color: textFg }}>
-            Project
-          </h2>
+        <div className="work-label-desktop absolute top-6 left-14 z-10 flex items-center gap-6" style={{ opacity: 0 }}>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>01</span>
+            <h2 className="font-display font-bold"
+              style={{ fontSize: "clamp(1rem, 2vw, 1.4rem)", letterSpacing: "-0.02em", color: textFg }}>
+              Project
+            </h2>
+          </div>
+
+          {/* Category filter pills desktop */}
+          <div className="flex items-center gap-2 pl-4 border-l" style={{ borderColor: `${primaryColor}22` }}>
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className="font-mono text-[9px] uppercase tracking-widest px-3 py-1 rounded transition-all duration-300"
+                style={{
+                  border: `1px solid ${selectedCategory === cat ? primaryColor : (isDark ? "rgba(91,134,239,0.15)" : "rgba(22,64,211,0.15)")}`,
+                  background: selectedCategory === cat ? `${primaryColor}18` : "transparent",
+                  color: selectedCategory === cat ? primaryColor : (isDark ? "rgba(220,227,246,0.5)" : "rgba(15,12,14,0.5)"),
+                }}
+                data-hover
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
+
         <div ref={trackRef} className="flex gap-px items-center"
           style={{ width: "max-content", paddingTop: "80px", paddingLeft: "clamp(2rem,5vw,3.5rem)", paddingRight: "clamp(2rem,5vw,3.5rem)" }}>
-          {PROJECTS.map(p => (
+          {filteredProjects.map(p => (
             <ProjectCard key={p.id} project={p} isDark={isDark} primaryColor={primaryColor} isTouch={isTouch} />
           ))}
           <div className="flex-shrink-0 flex flex-col items-start justify-end pb-10 pl-14"
             style={{ width: "260px", height: "calc(100vh - 120px)" }}>
-            <p className="font-mono text-[9px] uppercase tracking-[0.25em] mb-3" style={{ color: muted }}>4 projects</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.25em] mb-3" style={{ color: muted }}>{filteredProjects.length} projects</p>
             <button className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest hover:opacity-100 transition-opacity"
               style={{ color: primaryColor, opacity: 0.7 }}
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
@@ -1294,9 +1362,17 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
    Heading uses clip-path reveal. Links have Magnetic pull.   */
 function ContactSection({ isDark, primaryColor, isTouch }: { isDark: boolean; primaryColor: string; isTouch: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const [copied, setCopied] = useState(false);
   const textFg = isDark ? "#dce3f6" : "#0f0c0e";
   const muted = isDark ? "rgba(220,227,246,0.28)" : "rgba(15,12,14,0.28)";
   const emailColor = isDark ? "rgba(220,227,246,0.62)" : "rgba(15,12,14,0.62)";
+
+  const handleCopyEmail = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText("kianyigan@gmail.com");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -1340,12 +1416,18 @@ function ContactSection({ isDark, primaryColor, isTouch }: { isDark: boolean; pr
         <div className="contact-links flex flex-col gap-5 items-start md:items-end">
           <Magnetic strength={0.3} disabled={isTouch}>
             <a href="mailto:kianyigan@gmail.com"
-              className="group flex items-center gap-3 font-body text-base transition-colors duration-300"
+              onClick={handleCopyEmail}
+              title="Click to copy email address"
+              className="group flex items-center gap-3 font-body text-base transition-colors duration-300 relative"
               style={{ color: emailColor }} data-hover
               onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = primaryColor)}
               onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = emailColor)}>
               <Mail size={15} strokeWidth={1.2} />
               kianyigan@gmail.com
+              <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded ml-1"
+                style={{ border: `1px solid ${primaryColor}44`, color: primaryColor, opacity: 0.8 }}>
+                {copied ? "COPIED ✓" : "COPY"}
+              </span>
               <span className="transition-transform duration-300 group-hover:translate-x-1">
                 <ArrowRight size={14} strokeWidth={1.1} />
               </span>
@@ -1457,12 +1539,21 @@ export interface OutletCtx {
   isTouch: boolean;
 }
 
+const ACCENTS = [
+  { label: "BLUE", light: "#1640d3", dark: "#5b86ef" },
+  { label: "EMERALD", light: "#059669", dark: "#34d399" },
+  { label: "AMBER", light: "#d97706", dark: "#fbbf24" },
+  { label: "MONO", light: "#334155", dark: "#94a3b8" },
+] as const;
+
 /* ─── Root layout — shared across all pages ─────────────────── */
 function Root() {
   const [isDark, setIsDark] = useState(false);
+  const [accentIdx, setAccentIdx] = useState(0);
   const [preloaderDone, setPreloaderDone] = useState(false);
   const isTouch = useIsTouch();
-  const primaryColor = isDark ? "#5b86ef" : "#1640d3";
+  const currentAccent = ACCENTS[accentIdx];
+  const primaryColor = isDark ? currentAccent.dark : currentAccent.light;
   const overlayRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -1470,6 +1561,10 @@ function Root() {
   useLenis();
   useScrollSkew();
   useIdleAmbient();
+
+  const cycleAccent = useCallback(() => {
+    setAccentIdx(prev => (prev + 1) % ACCENTS.length);
+  }, []);
 
   // Scroll to top on page/route transition
   useEffect(() => {
@@ -1520,7 +1615,13 @@ function Root() {
         {!isTouch && <Cursor primaryColor={primaryColor} />}
         <BlueprintGrid primaryColor={primaryColor} />
         <LiveWidget primaryColor={primaryColor} />
-        <Nav isDark={isDark} onToggleDark={toggleDark} primaryColor={primaryColor} />
+        <Nav
+          isDark={isDark}
+          onToggleDark={toggleDark}
+          primaryColor={primaryColor}
+          accentLabel={currentAccent.label}
+          onCycleAccent={cycleAccent}
+        />
         <Outlet context={ctx} />
         {/* Transition overlay — sits above all content */}
         <div ref={overlayRef} className="transition-overlay fixed inset-0 z-[250]"
