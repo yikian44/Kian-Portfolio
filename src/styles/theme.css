@@ -192,24 +192,24 @@
   }
 }
 
-/* Lenis smooth scrolling compatibility */
-html {
-  overflow-y: scroll;
-}
-
-/* Hide scrollbar globally for Chrome, Safari and Opera */
-::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* Hide scrollbar globally for IE, Edge and Firefox */
+/* Lenis smooth scrolling compatibility & Global scrollbar hide */
 html, body {
+  overflow-x: hidden;
+}
+
+*, *::before, *::after, html, body, #root {
   -ms-overflow-style: none !important;  /* IE and Edge */
   scrollbar-width: none !important;  /* Firefox */
 }
 
-body {
-  overflow-y: hidden;
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
 html.lenis, html.lenis body {

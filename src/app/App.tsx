@@ -1246,8 +1246,8 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
               About
             </h2>
           </div>
-          <p className="font-body text-base leading-[1.9] mb-6" style={{ color: bodyColor }}>
-            Hi, I'm Gan Yi Kian, a Creative Media designer based in Selangor, Malaysia, specializing in UI/UX design. I create thoughtful, human-centred digital experiences through simplicity and purposeful design.
+          <p className="font-body text-base leading-[1.85] mb-6" style={{ color: bodyColor }}>
+            Hi, I'm Gan Yi Kian — a UI/UX & Creative Media designer based in Malaysia, crafting thoughtful, human-centered digital experiences through clean and purposeful design.
           </p>
         </div>
 

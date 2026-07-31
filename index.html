@@ -20,8 +20,22 @@
       />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       <style>
-        html, body { margin: 0; padding: 0; }
-        #root { width: 100%; }
+        html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; overflow-x: hidden; }
+        #root { width: 100%; min-height: 100%; overflow-x: hidden; }
+        /* Hide scrollbar globally for all browsers and elements */
+        *, *::before, *::after, html, body, #root {
+          -ms-overflow-style: none !important;
+          scrollbar-width: none !important;
+        }
+        *::-webkit-scrollbar,
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        #root::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+          background: transparent !important;
+        }
       </style>
       <!-- Must be a plain (non-module) script so it runs synchronously during
            HTML parsing — BEFORE the browser has a chance to restore scroll position.

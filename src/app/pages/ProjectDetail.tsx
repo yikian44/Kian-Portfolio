@@ -124,7 +124,7 @@ export default function ProjectDetail() {
 
         {/* View project link — top right */}
         <a
-          href={project.tagline.replace('Live Preview: ', '')}
+          href={project.liveUrl || project.tagline.replace('Live Preview: ', '')}
           target="_blank"
           rel="noopener noreferrer"
           className="absolute top-28 right-8 md:right-14 flex items-center gap-2 z-10 transition-all duration-300"
