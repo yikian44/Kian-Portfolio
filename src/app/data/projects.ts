@@ -24,6 +24,7 @@ export interface Project {
   approach: string[];
   outcome: string;
   gallery?: string[];
+  gifUrl?: string;
   metrics: ProjectMetric[];
 }
 
@@ -43,10 +44,12 @@ export const PROJECTS: Project[] = [
     secondImg: "/jalan-square-cover.jpg",
     gallery: [
       "/jalan-square-cover.jpg",
-      "/imperfect-vessel-cover.png",
-      "/lobster-atlas-cover-2.jpg",
-      "/daily-sedap.jpg",
+      "/jalan-square-welcome.png",
+      "/jalan-square-kaki-ikut.png",
+      "/jalan-square-si-kepala.png",
+      "/jalan-square-board.png",
     ],
+    gifUrl: "/jalan-square-demo.gif",
     tags: ["UI/UX", "Interactive"],
     tagline: "Let every group member participate in the planning process and make Malaysian group trips easier, fairer and more organized.",
     liveUrl: "https://www.figma.com/proto/UvyZ4mWLooxRDjwbhJFRAj/Jalan-Square?node-id=451-610&t=c2dQCzUzX64cykse-1",
@@ -71,9 +74,6 @@ export const PROJECTS: Project[] = [
     secondImg: "/imperfect-vessel-cover.png",
     gallery: [
       "/imperfect-vessel-cover.png",
-      "/jalan-square-cover.jpg",
-      "/lobster-atlas-cover-2.jpg",
-      "/daily-sedap.jpg",
     ],
     tags: ["Web Design", "Development"],
     tagline: "Help users recognize their perfectionistic behaviours and reappreciate flaws, accidents and incompleteness as part of beauty.",
@@ -99,9 +99,6 @@ export const PROJECTS: Project[] = [
     secondImg: "/daily-sedap.jpg",
     gallery: [
       "/daily-sedap.jpg",
-      "/jalan-square-cover.jpg",
-      "/imperfect-vessel-cover.png",
-      "/lobster-atlas-cover-2.jpg",
     ],
     tags: ["Social Media", "Video"],
     tagline: "The project aims to highlight these underappreciated cultural details through engaging short-form videos. It encourages local and international audiences to appreciate Malaysia’s food heritage while giving greater visibility to local food establishments and communities.",
@@ -127,9 +124,6 @@ export const PROJECTS: Project[] = [
     secondImg: "/lobster-atlas-cover-2.jpg",
     gallery: [
       "/lobster-atlas-cover-2.jpg",
-      "/imperfect-vessel-cover.png",
-      "/jalan-square-cover.jpg",
-      "/daily-sedap.jpg",
     ],
     tags: ["Web Design", "Development"],
     tagline: "Interactive species atlas mapping lobster biology and geographic distribution.",

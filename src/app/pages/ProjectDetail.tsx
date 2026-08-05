@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useNavigate, Link, useOutletContext } from "react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Maximize2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Maximize2, X, Lock } from "lucide-react";
 import { PROJECTS } from "../data/projects";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +14,7 @@ interface OutletCtx {
 }
 
 /* ─── Smooth Pixel Brush Photo Card (No Artificial Colors + 32px Big Blocks + Line Interpolation) ─── */
-function PixelGlitchPhotoCard({ imgSrc, alt, borderColor }: {
+function PixelGlitchPhotoCard({ imgSrc, alt, borderColor, index }: {
   imgSrc: string; alt: string; borderColor: string; primaryColor?: string; index?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,19 +140,21 @@ function PixelGlitchPhotoCard({ imgSrc, alt, borderColor }: {
     lastMouseRef.current = null;
   };
 
+  const isPhoneMockup = index !== undefined && index > 0;
+
   return (
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="w-full relative overflow-hidden group cursor-crosshair shadow-lg"
-      style={{ border: `1px solid ${borderColor}` }}
+      className="w-full h-full relative overflow-hidden group cursor-crosshair flex items-center justify-center bg-transparent"
     >
       <img
         src={imgSrc}
         alt={alt}
-        className="w-full object-cover block"
-        style={{ height: "clamp(260px, 44vw, 540px)" }}
+        className={`w-full object-contain block ${
+          isPhoneMockup ? "h-[420px] md:h-[460px]" : "h-auto max-h-[540px]"
+        }`}
       />
       <canvas
         ref={canvasRef}
@@ -168,6 +170,9 @@ export default function ProjectDetail() {
   const navigate = useNavigate();
   const { isDark, primaryColor } = useOutletContext<OutletCtx>();
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [showLockModal, setShowLockModal] = useState(false);
+  const [passcode, setPasscode] = useState("");
+  const [passError, setPassError] = useState(false);
 
   const project = PROJECTS.find((p) => p.slug === slug);
   const projectIndex = PROJECTS.findIndex((p) => p.slug === slug);
@@ -363,23 +368,80 @@ export default function ProjectDetail() {
         <div className="pd-rule h-px w-full" style={{ background: primaryColor, opacity: 0.22 }} />
 
         {/* ── Photo Showcase Section (Pixel Glitch Track Distortion) ── */}
-        <section className="pd-section py-10 md:py-14 flex flex-col items-center gap-8 w-full max-w-3xl mx-auto">
-          {(project.gallery && project.gallery.length > 0 ? project.gallery : [project.secondImg]).map((imgSrc, idx) => (
+        <section className="pd-section py-10 md:py-14 flex flex-col items-center gap-8 w-full max-w-4xl mx-auto">
+          {/* Main Cover Image */}
+          {project.gallery && project.gallery[0] && (
             <PixelGlitchPhotoCard
-              key={idx}
-              index={idx}
-              imgSrc={imgSrc}
-              alt={`${project.title} — photo ${idx + 1}`}
+              index={0}
+              imgSrc={project.gallery[0]}
+              alt={`${project.title} — Cover`}
               borderColor={borderColor}
               primaryColor={primaryColor}
             />
-          ))}
+          )}
+
+          {/* Additional Images (e.g. App screens grid) */}
+          {project.gallery && project.gallery.length > 1 && (
+            <div className={`grid gap-4 md:gap-6 w-full max-w-5xl mx-auto items-center justify-items-center ${
+              project.gallery.length - 1 >= 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 max-w-2xl'
+            }`}>
+              {project.gallery.slice(1).map((imgSrc, idx) => (
+                <div key={idx + 1} className="w-full max-w-[220px] flex justify-center">
+                  <PixelGlitchPhotoCard
+                    index={idx + 1}
+                    imgSrc={imgSrc}
+                    alt={`${project.title} — photo ${idx + 2}`}
+                    borderColor={borderColor}
+                    primaryColor={primaryColor}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* GIF Animation Showcase below 4 screens */}
+          {project.gifUrl && (
+            <div className="w-full max-w-3xl mx-auto mt-4">
+              <PixelGlitchPhotoCard
+                imgSrc={project.gifUrl}
+                alt={`${project.title} — Animated Showcase`}
+                borderColor={borderColor}
+                primaryColor={primaryColor}
+              />
+            </div>
+          )}
         </section>
 
         <div className="pd-rule h-px w-full" style={{ background: primaryColor, opacity: 0.22 }} />
 
         {/* ── Bottom Action Row: View Project CTA ── */}
-        <div className="pd-section py-10 md:py-12 flex justify-end">
+        <div className="pd-section py-10 md:py-12 flex items-center justify-end gap-3 md:gap-4 flex-wrap">
+          {/* Case Study button with Lock icon in the middle */}
+          <button
+            onClick={() => setShowLockModal(true)}
+            className="flex items-center gap-2 px-6 py-4 transition-all duration-300 font-mono text-[10px] uppercase tracking-[0.25em] group cursor-pointer"
+            style={{
+              color: isDark ? "rgba(220,227,246,0.75)" : "rgba(15,12,14,0.75)",
+              border: `1px solid ${isDark ? "rgba(91,134,239,0.22)" : "rgba(22,64,211,0.18)"}`,
+              background: isDark ? "rgba(20,24,40,0.5)" : "rgba(255,255,255,0.6)",
+            }}
+            onMouseEnter={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.borderColor = primaryColor;
+              el.style.color = textFg;
+            }}
+            onMouseLeave={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.borderColor = isDark ? "rgba(91,134,239,0.22)" : "rgba(22,64,211,0.18)";
+              el.style.color = isDark ? "rgba(220,227,246,0.75)" : "rgba(15,12,14,0.75)";
+            }}
+            data-hover
+          >
+            <span>CASE</span>
+            <Lock size={12} strokeWidth={1.5} style={{ color: primaryColor }} />
+            <span>STUDY</span>
+          </button>
+
           <a
             href={project.liveUrl || project.tagline.replace('Live Preview: ', '')}
             target="_blank"
@@ -397,6 +459,45 @@ export default function ProjectDetail() {
           </a>
         </div>
       </div>
+
+      {/* ── Case Study Coming Soon Modal ── */}
+      {showLockModal && (
+        <div
+          className="fixed inset-0 z-[250] flex items-center justify-center p-4 animate-in fade-in duration-200"
+          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
+          onClick={() => setShowLockModal(false)}
+        >
+          <div
+            className="relative w-full max-w-sm p-8 border shadow-2xl transition-all text-center flex flex-col items-center gap-4"
+            style={{
+              background: isDark ? "#0e111d" : "#ffffff",
+              borderColor: isDark ? "rgba(91,134,239,0.25)" : "rgba(22,64,211,0.2)",
+              color: textFg,
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowLockModal(false)}
+              className="absolute top-4 right-4 p-1 opacity-50 hover:opacity-100 transition-opacity"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${primaryColor}15`, color: primaryColor }}>
+              <Lock size={22} strokeWidth={1.5} />
+            </div>
+
+            <div>
+              <h3 className="font-display font-bold text-2xl uppercase tracking-wider mb-1" style={{ color: primaryColor }}>
+                Coming Soon
+              </h3>
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em]" style={{ color: muted }}>
+                Case Study In Preparation
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Next project ─────────────────────────────────── */}
       <div className="pd-section" style={{ borderTop: `1px solid ${borderColor}` }}>

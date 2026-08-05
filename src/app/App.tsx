@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, MouseEvent, createContext, useContext, MutableRefObject } from "react";
-import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers, Layout, Palette, Play, Smartphone, Gamepad2, Flame, Cpu, Sparkles, Terminal, Box, Code2 } from "lucide-react";
+import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers, Layout, Palette, Play, Smartphone, Gamepad2, Flame, Cpu, Sparkles, Terminal, Box, Code2, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import * as THREE from "three";
 import { gsap } from "gsap";
