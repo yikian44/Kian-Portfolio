@@ -14,8 +14,8 @@ interface OutletCtx {
 }
 
 /* ─── Smooth Pixel Brush Photo Card (No Artificial Colors + 32px Big Blocks + Line Interpolation) ─── */
-function PixelGlitchPhotoCard({ imgSrc, alt, borderColor, index }: {
-  imgSrc: string; alt: string; borderColor: string; primaryColor?: string; index?: number;
+function PixelGlitchPhotoCard({ imgSrc, alt, borderColor, index, isStamp, onClick }: {
+  imgSrc: string; alt: string; borderColor: string; primaryColor?: string; index?: number; isStamp?: boolean; onClick?: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -140,20 +140,27 @@ function PixelGlitchPhotoCard({ imgSrc, alt, borderColor, index }: {
     lastMouseRef.current = null;
   };
 
-  const isPhoneMockup = index !== undefined && index > 0;
+  const isPhoneMockup = !isStamp && index !== undefined && index > 0;
 
   return (
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="w-full h-full relative overflow-hidden group cursor-crosshair flex items-center justify-center bg-transparent"
+      onClick={onClick}
+      className={`w-full h-full relative overflow-hidden group flex items-center justify-center bg-transparent ${
+        onClick ? "cursor-zoom-in" : "cursor-crosshair"
+      }`}
     >
       <img
         src={imgSrc}
         alt={alt}
-        className={`w-full object-contain block ${
-          isPhoneMockup ? "h-[420px] md:h-[460px]" : "h-auto max-h-[540px]"
+        className={`w-full object-contain block transition-transform duration-300 ${
+          isStamp
+            ? "h-[260px] md:h-[320px] w-auto max-w-[360px] group-hover:scale-105"
+            : isPhoneMockup
+            ? "h-[420px] md:h-[460px]"
+            : "h-auto max-h-[540px]"
         }`}
       />
       <canvas
@@ -377,6 +384,7 @@ export default function ProjectDetail() {
               alt={`${project.title} — Cover`}
               borderColor={borderColor}
               primaryColor={primaryColor}
+              onClick={() => setExpandedImage(project.gallery![0])}
             />
           )}
 
@@ -393,13 +401,64 @@ export default function ProjectDetail() {
                     alt={`${project.title} — photo ${idx + 2}`}
                     borderColor={borderColor}
                     primaryColor={primaryColor}
+                    onClick={() => setExpandedImage(imgSrc)}
                   />
                 </div>
               ))}
             </div>
           )}
 
-          {/* GIF Animation Showcase below 4 screens */}
+          {/* Stamps Showcase Section (Centered in Middle + Larger Size) */}
+          {project.stamps && project.stamps.length > 0 && (
+            <div className="w-full max-w-4xl mx-auto mt-6 md:mt-8 flex flex-col items-center gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-8 md:gap-14 w-full">
+                {project.stamps.map((stampSrc, sIdx) => (
+                  <div
+                    key={sIdx}
+                    onClick={() => setExpandedImage(stampSrc)}
+                    className="relative group cursor-zoom-in transition-all duration-300 flex justify-center items-center p-2 hover:scale-105"
+                  >
+                    <PixelGlitchPhotoCard
+                      imgSrc={stampSrc}
+                      alt={`${project.title} — stamp ${sIdx + 1}`}
+                      borderColor={borderColor}
+                      primaryColor={primaryColor}
+                      isStamp={true}
+                      onClick={() => setExpandedImage(stampSrc)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Desktop Laptop Mockup Showcase */}
+          {project.desktopImg && (
+            <div className="w-full max-w-5xl mx-auto mt-6">
+              <PixelGlitchPhotoCard
+                imgSrc={project.desktopImg}
+                alt={`${project.title} — Desktop Mockup`}
+                borderColor={borderColor}
+                primaryColor={primaryColor}
+                onClick={() => setExpandedImage(project.desktopImg!)}
+              />
+            </div>
+          )}
+
+          {/* Extra Showcase Images (e.g. Artwork poster collections) */}
+          {project.extraImages && project.extraImages.map((imgSrc, eIdx) => (
+            <div key={eIdx} className="w-full max-w-5xl mx-auto mt-6">
+              <PixelGlitchPhotoCard
+                imgSrc={imgSrc}
+                alt={`${project.title} — Artwork Collection ${eIdx + 1}`}
+                borderColor={borderColor}
+                primaryColor={primaryColor}
+                onClick={() => setExpandedImage(imgSrc)}
+              />
+            </div>
+          ))}
+
+          {/* GIF Animation Showcase below screens */}
           {project.gifUrl && (
             <div className="w-full max-w-3xl mx-auto mt-4">
               <PixelGlitchPhotoCard
@@ -407,6 +466,7 @@ export default function ProjectDetail() {
                 alt={`${project.title} — Animated Showcase`}
                 borderColor={borderColor}
                 primaryColor={primaryColor}
+                onClick={() => setExpandedImage(project.gifUrl!)}
               />
             </div>
           )}
@@ -454,7 +514,7 @@ export default function ProjectDetail() {
             }}
             data-hover
           >
-            <span>View Project</span>
+            <span>{project.ctaLabel || "View Project"}</span>
             <ArrowUpRight size={15} strokeWidth={1.3} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>
@@ -495,6 +555,30 @@ export default function ProjectDetail() {
                 Case Study In Preparation
               </p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Image Lightbox Modal (Click to Enlarge / Zoom) ── */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 z-[300] flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-200 cursor-zoom-out"
+          style={{ background: "rgba(0,0,0,0.92)", backdropFilter: "blur(12px)" }}
+          onClick={() => setExpandedImage(null)}
+        >
+          <button
+            onClick={() => setExpandedImage(null)}
+            className="absolute top-6 right-6 p-2.5 rounded-full text-white/80 hover:text-white bg-white/10 hover:bg-white/20 transition-all z-[310] cursor-pointer"
+          >
+            <X size={24} />
+          </button>
+          <div className="relative max-w-full max-h-full flex items-center justify-center">
+            <img
+              src={expandedImage}
+              alt="Expanded View"
+              className="max-w-[92vw] max-h-[88vh] object-contain shadow-2xl transition-transform duration-300 select-none"
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
         </div>
       )}

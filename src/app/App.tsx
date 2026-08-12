@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, MouseEvent, createContext, useContext, MutableRefObject } from "react";
-import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers, Layout, Palette, Play, Smartphone, Gamepad2, Flame, Cpu, Sparkles, Terminal, Box, Code2, Lock } from "lucide-react";
+import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers, Layout, Palette, Play, Pause, Volume2, VolumeX, Smartphone, Gamepad2, Flame, Cpu, Sparkles, Terminal, Box, Code2, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import * as THREE from "three";
 import { gsap } from "gsap";
@@ -1264,6 +1264,39 @@ const AntigravityIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) 
 
 function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor: string }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+
+  // Auto-play when visible in viewport, pause when offscreen to save CPU/GPU resources
+  useEffect(() => {
+    if (!videoRef.current) return;
+    const videoEl = videoRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          videoEl.play().catch(() => {});
+        } else {
+          videoEl.pause();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(videoEl);
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleVideo = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
   const textFg = isDark ? "#dce3f6" : "#0f0c0e";
   const bodyColor = isDark ? "rgba(220,227,246,0.65)" : "rgba(15,12,14,0.68)";
   const muted = isDark ? "rgba(220,227,246,0.35)" : "rgba(15,12,14,0.42)";
@@ -1279,6 +1312,29 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
     { name: "AI Assistant Design", icon: <Sparkles className="w-3.5 h-3.5" /> },
     { name: "Antigravity", icon: <AntigravityIcon className="w-3.5 h-3.5" /> }
   ];
+
+  const handleVideoMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    gsap.to(card, {
+      rotateY: (x / rect.width) * 14,
+      rotateX: -(y / rect.height) * 14,
+      duration: 0.4,
+      ease: "power2.out",
+    });
+  };
+
+  const handleVideoMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    gsap.to(card, {
+      rotateY: 0,
+      rotateX: 0,
+      duration: 0.8,
+      ease: "power3.out",
+    });
+  };
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -1299,6 +1355,33 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
           scrollTrigger: { trigger: el, start: "top 75%", once: true } });
       });
 
+      // 3D Perspective Scroll Entrance for Video Card
+      gsap.fromTo(
+        ".about-video-card",
+        {
+          opacity: 0,
+          y: 45,
+          scale: 0.88,
+          rotateX: -12,
+          rotateY: 6,
+          transformPerspective: 1000,
+          transformOrigin: "center center",
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          rotateY: 0,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".about-video-card",
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
 
     }, el);
     return () => ctx.revert();
@@ -1307,16 +1390,78 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
   return (
     <section id="about" ref={sectionRef} className="relative z-10 px-8 md:px-14 py-20 md:py-28">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-24">
-        <div className="about-left">
-          <div className="flex items-baseline gap-4 mb-8">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>02</span>
-            <h2 className="font-display font-bold" style={{ fontSize: "clamp(1.8rem, 4vw, 3.5rem)", letterSpacing: "-0.02em", color: textFg }}>
-              About
-            </h2>
+        <div className="about-left flex flex-col justify-between">
+          <div>
+            <div className="flex items-baseline gap-4 mb-8">
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>02</span>
+              <h2 className="font-display font-bold" style={{ fontSize: "clamp(1.8rem, 4vw, 3.5rem)", letterSpacing: "-0.02em", color: textFg }}>
+                About
+              </h2>
+            </div>
+            <p className="font-body text-base leading-[1.85] mb-6" style={{ color: bodyColor }}>
+              Hi, I'm Gan Yi Kian — a UI/UX & Creative Media designer based in Malaysia, crafting thoughtful, human-centered digital experiences through clean and purposeful design.
+            </p>
           </div>
-          <p className="font-body text-base leading-[1.85] mb-6" style={{ color: bodyColor }}>
-            Hi, I'm Gan Yi Kian — a UI/UX & Creative Media designer based in Malaysia, crafting thoughtful, human-centered digital experiences through clean and purposeful design.
-          </p>
+
+          {/* Vertical Video Showcase Player with GSAP 3D Scroll & Mouse Tilt */}
+          <div
+            onMouseMove={handleVideoMouseMove}
+            onMouseLeave={handleVideoMouseLeave}
+            className="about-video-card mt-4 md:mt-6 relative max-w-[280px] sm:max-w-[320px] rounded-xl overflow-hidden group border transition-all duration-300 shadow-lg"
+            style={{
+              borderColor: `${primaryColor}30`,
+              background: isDark ? "#0e1220" : "#ffffff",
+              perspective: 1000,
+            }}>
+            <div className="relative w-full flex items-center justify-center overflow-hidden bg-black/40">
+              <video
+                ref={videoRef}
+                src="/about-video.mp4"
+                poster="/imperfect-vessel-cover.png"
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+                preload="metadata"
+                className="w-full h-auto object-contain block"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+              />
+
+              {/* Play / Pause overlay */}
+              <button
+                onClick={toggleVideo}
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-300 cursor-pointer ${
+                  isPlaying ? "bg-black/10 opacity-0 group-hover:opacity-100" : "bg-black/35 opacity-100"
+                }`}
+                aria-label={isPlaying ? "Pause Video" : "Play Video"}
+              >
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-2xl"
+                  style={{
+                    background: `${primaryColor}dd`,
+                    color: "#ffffff",
+                    backdropFilter: "blur(8px)",
+                    border: "1px solid rgba(255,255,255,0.3)",
+                  }}
+                >
+                  {isPlaying ? <Pause size={18} fill="#ffffff" /> : <Play size={20} fill="#ffffff" className="ml-0.5" />}
+                </div>
+              </button>
+
+              {/* Sound Toggle Button bottom right */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMuted(!isMuted);
+                }}
+                className="absolute bottom-3 right-3 p-2 rounded-full text-white/80 hover:text-white bg-black/65 hover:bg-black/85 backdrop-blur-md transition-all z-10 cursor-pointer"
+                aria-label={isMuted ? "Unmute sound" : "Mute sound"}
+              >
+                {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="about-right">
@@ -1333,7 +1478,7 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
               <div className="relative pl-4" style={{ borderLeft: `1px solid ${primaryColor}22` }}>
                 <div className="absolute top-1.5 -left-1 w-2 h-2 rounded-full bg-transparent border" style={{ borderColor: primaryColor }} />
                 <p className="font-mono text-[8px] uppercase tracking-widest mb-1.5" style={{ color: muted }}>2017 - 2023</p>
-                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>High School</h4>
+                <h4 className="font-display font-bold text-base leading-tight mb-1" style={{ color: textFg }}>Unified Examination Certificate (UEC)</h4>
                 <p className="font-body text-[11px]" style={{ color: muted }}>Chung Hua Independent High School Klang</p>
               </div>
             </div>

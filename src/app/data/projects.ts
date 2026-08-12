@@ -19,12 +19,16 @@ export interface Project {
   tags: readonly string[];
   tagline: string;
   liveUrl?: string;
+  ctaLabel?: string;
   overview: string;
   challenge: string;
   approach: string[];
   outcome: string;
   gallery?: string[];
+  stamps?: string[];
   gifUrl?: string;
+  desktopImg?: string;
+  extraImages?: string[];
   metrics: ProjectMetric[];
 }
 
@@ -48,11 +52,20 @@ export const PROJECTS: Project[] = [
       "/jalan-square-kaki-ikut.png",
       "/jalan-square-si-kepala.png",
       "/jalan-square-board.png",
+      "/jalan-square-cari-dulu.png",
+      "/jalan-square-batu-caves.png",
+      "/jalan-square-group-map.png",
+      "/jalan-square-board-detail.png",
+    ],
+    stamps: [
+      "/jalan-square-stamp-belum.png",
+      "/jalan-square-stamp-kautim.png",
     ],
     gifUrl: "/jalan-square-demo.gif",
     tags: ["UI/UX", "Interactive"],
     tagline: "Let every group member participate in the planning process and make Malaysian group trips easier, fairer and more organized.",
     liveUrl: "https://www.figma.com/proto/UvyZ4mWLooxRDjwbhJFRAj/Jalan-Square?node-id=451-610&t=c2dQCzUzX64cykse-1",
+    ctaLabel: "View in Figma",
     overview: "Jalan Square is a mobile application that provides a collaborative travel-planning experience for young Malaysian travellers, helping groups discover local destinations, share ideas, vote and organize their trips together.\n\nThis is a UI/UX project focusing on localized travel content, group decision-making and shared trip organization.",
     challenge: "Planning a group trip often requires switching between WhatsApp, Google Maps, spreadsheets and multiple booking applications.\n\nThis causes information to become scattered, decisions to take longer, and most planning responsibilities to fall on one person.\n\nThis is mainly caused by:\n(1) Fragmented planning tools\n(2) Unclear group decisions\n(3) Unequal participation\n(4) Limited localized travel inspiration",
     approach: ["Figma Prototyping", "Interactive Spatial UI"],
@@ -74,6 +87,14 @@ export const PROJECTS: Project[] = [
     secondImg: "/imperfect-vessel-cover.png",
     gallery: [
       "/imperfect-vessel-cover.png",
+      "/imperfect-vessel-editor.png",
+      "/imperfect-vessel-result-1.png",
+      "/imperfect-vessel-community.png",
+      "/imperfect-vessel-result-2.png",
+    ],
+    desktopImg: "/imperfect-vessel-desktop.png",
+    extraImages: [
+      "/imperfect-vessel-faces.png",
     ],
     tags: ["Web Design", "Development"],
     tagline: "Help users recognize their perfectionistic behaviours and reappreciate flaws, accidents and incompleteness as part of beauty.",
