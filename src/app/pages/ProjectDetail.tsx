@@ -159,7 +159,7 @@ function PixelGlitchPhotoCard({ imgSrc, alt, borderColor, index, isStamp, onClic
           isStamp
             ? "h-[260px] md:h-[320px] w-auto max-w-[360px] group-hover:scale-105"
             : isPhoneMockup
-            ? "h-[420px] md:h-[460px]"
+            ? "max-h-[420px] md:max-h-[460px] h-auto w-auto object-contain"
             : "h-auto max-h-[540px]"
         }`}
       />

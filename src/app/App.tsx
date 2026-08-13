@@ -1092,13 +1092,13 @@ function WorkSection({ isDark, primaryColor, isTouch }: {
   const textFg = isDark ? "#dce3f6" : "#0f0c0e";
   const muted = isDark ? "rgba(220,227,246,0.25)" : "rgba(15,12,14,0.25)";
 
-  const categories = ["ALL", "UI/UX", "WEB", "CONTENT"] as const;
+  const categories = ["ALL", "APP", "INTERACTIVE DESIGN", "CONTENT"] as const;
 
   const filteredProjects = PROJECTS.filter(p => {
     if (selectedCategory === "ALL") return true;
-    if (selectedCategory === "UI/UX") return p.category.includes("UI / UX");
-    if (selectedCategory === "WEB") return p.category.includes("Web") || p.category.includes("Interactive");
-    if (selectedCategory === "CONTENT") return p.category.includes("Content") || p.category.includes("Video");
+    if (selectedCategory === "APP") return p.category.toLowerCase().includes("app") || p.category.toLowerCase().includes("ui");
+    if (selectedCategory === "INTERACTIVE DESIGN") return p.category.toLowerCase().includes("interactive") || p.category.toLowerCase().includes("web");
+    if (selectedCategory === "CONTENT") return p.category.toLowerCase().includes("content") || p.category.toLowerCase().includes("video");
     return true;
   });
 
