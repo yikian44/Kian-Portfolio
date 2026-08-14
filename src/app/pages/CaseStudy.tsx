@@ -234,7 +234,7 @@ export default function CaseStudy() {
               Interactive Presentation Deck
             </h2>
             <div
-              className="relative w-full rounded-lg overflow-hidden border shadow-2xl"
+              className="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden border shadow-xl"
               style={{
                 paddingTop: "56.25%",
                 borderColor,
