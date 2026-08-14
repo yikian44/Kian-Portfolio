@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback, MouseEvent, createContext, useContext, MutableRefObject } from "react";
 import { Linkedin, Dribbble, BookMarked, Mail, ArrowRight, ArrowUpRight, ArrowUp, ChevronDown, Globe, Clock, Layers, Layout, Palette, Play, Pause, Volume2, VolumeX, Smartphone, Gamepad2, Flame, Cpu, Sparkles, Terminal, Box, Code2, Lock } from "lucide-react";
-import { motion } from "motion/react";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -338,10 +337,7 @@ function TypewriterText({ color }: { color: string }) {
   return (
     <span className="font-mono text-[9px] uppercase tracking-[0.28em]" style={{ color }}>
       {display}
-      <motion.span
-        animate={{ opacity: [1, 0] }}
-        transition={{ repeat: Infinity, duration: 0.5, repeatType: "mirror", ease: "linear" }}
-      >|</motion.span>
+      <span className="animate-pulse">|</span>
     </span>
   );
 }
@@ -896,9 +892,9 @@ function Hero({ isDark, primaryColor }: { isDark: boolean; primaryColor: string 
         </div>
         <div className="hero-bottom flex items-center justify-end mt-5">
           <div className="flex items-center gap-2" style={{ color: primaryColor }}>
-            <motion.div animate={{ y: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}>
+            <div className="animate-bounce">
               <ChevronDown size={14} strokeWidth={1.2} />
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
