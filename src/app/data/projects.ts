@@ -211,6 +211,7 @@ export const PROJECTS: Project[] = [
     metrics: [{ value: "100%", label: "Completion" }],
     caseStudy: {
       audience: "Health-conscious Malaysians, busy working professionals, & fitness enthusiasts (Ages 18 - 45)",
+      canvaEmbedUrl: "https://www.canva.com/design/DAHQAyavrVQ/view?embed",
       objectives: [
         { title: "Personalized Subscriptions", desc: "Empower users with tailored dietary plans including Protein Plus, Essential Vegan, High Fiber, and Gluten Free choices." },
         { title: "AI Assistant Guidance", desc: "Integrate Nour Chatbot to provide 24/7 real-time macro calculation, meal swap suggestions, and diet advice." },
