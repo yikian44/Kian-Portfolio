@@ -514,7 +514,7 @@ export default function ProjectDetail() {
             }}
             data-hover
           >
-            <span>{project.ctaLabel || "View Project"}</span>
+            <span>{project.ctaLabel || "View In Figma"}</span>
             <ArrowUpRight size={15} strokeWidth={1.3} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>

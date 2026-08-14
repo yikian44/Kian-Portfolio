@@ -159,5 +159,31 @@ export const PROJECTS: Project[] = [
     approach: ["Data Mapping", "Web Development", "UI Design"],
     outcome: "Deployed an intuitive, interactive atlas that simplifies marine research data.",
     metrics: [{ value: "100%", label: "Completion" }],
+  },
+  {
+    id: 5,
+    slug: "nour",
+    idx: "05",
+    title: "NOUR",
+    category: "App",
+    year: "2026",
+    role: "UI/UX Designer",
+    tools: "Figma",
+    duration: "May 2026 - August 2026",
+    img: "/nour-cover.png",
+    heroImg: "/nour-cover.png",
+    secondImg: "/nour-cover.png",
+    gallery: [
+      "/nour-cover.png",
+    ],
+    tags: ["UI/UX", "Mobile App"],
+    tagline: "Create a seamless meal subscription experience that makes healthy eating easier through personalized meal plans, simple tracking, and daily nutritional guidance.",
+    overview: "Nour is a personalized meal subscription app that helps Malaysians build healthier eating habits through customized local meal plans, nutrition tracking, and an AI-powered assistant.",
+    challenge: "Maintaining a healthy diet can be difficult without convenient guidance that fits individual nutritional goals, busy routines, and local food preferences.",
+    approach: ["UI/UX Prototyping", "Personalized Meal Architecture", "AI Assistant Integration"],
+    outcome: "Designed an intuitive mobile app experience with personalized subscription flows and daily nutritional tracking.",
+    metrics: [{ value: "100%", label: "Completion" }],
   }
 ];
+
+
