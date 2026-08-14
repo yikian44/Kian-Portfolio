@@ -3,6 +3,25 @@ export interface ProjectMetric {
   label: string;
 }
 
+export interface CaseStudyBlock {
+  type: "text-image" | "card-grid" | "full-image" | "comparison";
+  sectionNumber?: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  imagePosition?: "left" | "right";
+  images?: string[];
+  comparisonLabels?: string[];
+  cards?: Array<{ title: string; desc: string }>;
+}
+
+export interface CaseStudyData {
+  audience?: string;
+  objectives?: Array<{ title: string; desc: string }>;
+  storyBlocks?: CaseStudyBlock[];
+  ctaButtons?: Array<{ label: string; url: string }>;
+}
+
 export interface Project {
   id: number;
   slug: string;
@@ -30,6 +49,7 @@ export interface Project {
   desktopImg?: string;
   extraImages?: string[];
   metrics: ProjectMetric[];
+  caseStudy?: CaseStudyData;
 }
 
 export const PROJECTS: Project[] = [
@@ -188,6 +208,49 @@ export const PROJECTS: Project[] = [
     approach: ["UI/UX Prototyping", "Personalized Meal Architecture", "AI Assistant Integration"],
     outcome: "Designed an intuitive mobile app experience with personalized subscription flows and daily nutritional tracking.",
     metrics: [{ value: "100%", label: "Completion" }],
+    caseStudy: {
+      audience: "Health-conscious Malaysians, busy working professionals, & fitness enthusiasts (Ages 18 - 45)",
+      objectives: [
+        { title: "Personalized Subscriptions", desc: "Empower users with tailored dietary plans including Protein Plus, Essential Vegan, High Fiber, and Gluten Free choices." },
+        { title: "AI Assistant Guidance", desc: "Integrate Nour Chatbot to provide 24/7 real-time macro calculation, meal swap suggestions, and diet advice." },
+        { title: "Simplified Onboarding", desc: "Streamline user goal configuration into a seamless 3-step setup to eliminate decision fatigue." },
+        { title: "Localized Meal Ecosystem", desc: "Connect users with 1000+ certified local healthy recipes and restaurant partners across Malaysia." }
+      ],
+      storyBlocks: [
+        {
+          type: "text-image",
+          sectionNumber: "03",
+          title: "User Journey & Goal Setup",
+          subtitle: "Empowering users through structured wellness choices",
+          description: "The onboarding flow allows users to select core wellness targets—such as clean eating, boosting energy, reducing stress, or building muscle. The interface dynamically updates to recommend personalized subscription plans matching their daily caloric needs.",
+          imagePosition: "right",
+          images: ["/nour-cover.png"]
+        },
+        {
+          type: "card-grid",
+          sectionNumber: "04",
+          title: "Core Product Features",
+          subtitle: "Four pillars supporting seamless daily nutrition",
+          cards: [
+            { title: "Flex Meal Subscriptions", desc: "Easily modify or switch meal plan tiers between Protein Plus, Essential Vegan, and High Fiber week-by-week." },
+            { title: "Auto Meal Planner", desc: "Automated daily meal suggestions pre-scheduled directly into your personal calendar." },
+            { title: "Nour AI Chatbot", desc: "24/7 conversational assistant for real-time calorie tracking and nutrition Q&A." },
+            { title: "Local Kitchen Network", desc: "Direct partnerships with certified healthy food providers across major Malaysian urban hubs." }
+          ]
+        },
+        {
+          type: "full-image",
+          sectionNumber: "05",
+          title: "High-Fidelity Interface Showcase",
+          subtitle: "Clean, accessible mobile UI design System",
+          description: "Full app flow screens illustrating goal selection, subscription customization, AI chatbot interactions, and weekly meal schedule tracking.",
+          images: ["/nour-cover.png"]
+        }
+      ],
+      ctaButtons: [
+        { label: "View Prototype In Figma", url: "https://www.figma.com/proto/aa4GQ7RYPKDKV5hvtnit7I/Nour-App?node-id=3602-2601&p=f&t=IWN8dCCmAWF4bGVe-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3564%3A7021&show-proto-sidebar=1" }
+      ]
+    }
   }
 ];
 

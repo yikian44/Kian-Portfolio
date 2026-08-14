@@ -8,6 +8,7 @@ import { RouterProvider, createHashRouter, Outlet, useOutletContext, useNavigate
 import logoImg from "@/imports/new-logo.png";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import ProjectDetail from "./pages/ProjectDetail";
+import CaseStudy from "./pages/CaseStudy";
 import { PROJECTS as PROJECTS_DATA } from "./data/projects";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -1796,6 +1797,7 @@ const router = createHashRouter([
     children: [
       { index: true, Component: PortfolioPage },
       { path: "project/:slug", Component: ProjectDetail },
+      { path: "casestudy/:slug", Component: CaseStudy },
     ],
   },
 ]);

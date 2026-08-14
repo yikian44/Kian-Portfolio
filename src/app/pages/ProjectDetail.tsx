@@ -476,9 +476,9 @@ export default function ProjectDetail() {
 
         {/* ── Bottom Action Row: View Project CTA ── */}
         <div className="pd-section py-10 md:py-12 flex items-center justify-end gap-3 md:gap-4 flex-wrap">
-          {/* Case Study button with Lock icon in the middle */}
-          <button
-            onClick={() => setShowLockModal(true)}
+          {/* Case Study button */}
+          <Link
+            to={`/casestudy/${project.slug}`}
             className="flex items-center gap-2 px-6 py-4 transition-all duration-300 font-mono text-[10px] uppercase tracking-[0.25em] group cursor-pointer"
             style={{
               color: isDark ? "rgba(220,227,246,0.75)" : "rgba(15,12,14,0.75)",
@@ -497,10 +497,9 @@ export default function ProjectDetail() {
             }}
             data-hover
           >
-            <span>CASE</span>
-            <Lock size={12} strokeWidth={1.5} style={{ color: primaryColor }} />
-            <span>STUDY</span>
-          </button>
+            <span>READ CASE STUDY</span>
+            <ArrowRight size={13} strokeWidth={1.3} style={{ color: primaryColor }} />
+          </Link>
 
           <a
             href={project.liveUrl || project.tagline.replace('Live Preview: ', '')}
