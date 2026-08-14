@@ -169,7 +169,7 @@ export const PROJECTS: Project[] = [
     year: "2026",
     role: "UI/UX Designer",
     tools: "Figma",
-    duration: "May 2026 - August 2026",
+    duration: "April 2026 - August 2026",
     img: "/nour-cover.png",
     heroImg: "/nour-cover.png",
     secondImg: "/nour-cover.png",
