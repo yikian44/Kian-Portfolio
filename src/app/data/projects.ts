@@ -178,6 +178,8 @@ export const PROJECTS: Project[] = [
     ],
     tags: ["UI/UX", "Mobile App"],
     tagline: "Create a seamless meal subscription experience that makes healthy eating easier through personalized meal plans, simple tracking, and daily nutritional guidance.",
+    liveUrl: "https://www.figma.com/proto/aa4GQ7RYPKDKV5hvtnit7I/Nour-App?node-id=3602-2601&p=f&t=IWN8dCCmAWF4bGVe-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3564%3A7021&show-proto-sidebar=1",
+    ctaLabel: "View In Figma",
     overview: "Nour is a personalized meal subscription app that helps Malaysians build healthier eating habits through customized local meal plans, nutrition tracking, and an AI-powered assistant.",
     challenge: "Maintaining a healthy diet can be difficult without convenient guidance that fits individual nutritional goals, busy routines, and local food preferences.",
     approach: ["UI/UX Prototyping", "Personalized Meal Architecture", "AI Assistant Integration"],
