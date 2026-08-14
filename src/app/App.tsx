@@ -224,7 +224,7 @@ function useLenis() {
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
     return () => { lenis.destroy(); gsap.ticker.remove(tick); delete (window as any).lenis; };
   }, []);
 }
