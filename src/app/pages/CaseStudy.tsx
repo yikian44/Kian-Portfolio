@@ -224,6 +224,35 @@ export default function CaseStudy() {
           </div>
         </section>
 
+        {/* ── Canva Presentation Deck Embed ── */}
+        {caseStudy.canvaEmbedUrl && (
+          <section className="cs-section py-12 md:py-16 border-b" style={{ borderColor }}>
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: primaryColor }}>
+              SLIDES // PRESENTATION
+            </span>
+            <h2 className="font-display font-bold text-2xl md:text-3xl mt-2 mb-6" style={{ color: textFg }}>
+              Interactive Presentation Deck
+            </h2>
+            <div
+              className="relative w-full rounded-lg overflow-hidden border shadow-2xl"
+              style={{
+                paddingTop: "56.25%",
+                borderColor,
+                background: cardBg,
+              }}
+            >
+              <iframe
+                loading="lazy"
+                className="absolute inset-0 w-full h-full border-0"
+                src={caseStudy.canvaEmbedUrl}
+                allowFullScreen
+                allow="fullscreen"
+                title={`${project.title} Presentation Deck`}
+              />
+            </div>
+          </section>
+        )}
+
         {/* ── 03 Process & Modular Story Blocks ── */}
         {caseStudy.storyBlocks && caseStudy.storyBlocks.map((block, i) => (
           <section key={i} className="cs-section py-12 md:py-16 border-b" style={{ borderColor }}>

@@ -18,6 +18,7 @@ export interface CaseStudyBlock {
 export interface CaseStudyData {
   audience?: string;
   objectives?: Array<{ title: string; desc: string }>;
+  canvaEmbedUrl?: string;
   storyBlocks?: CaseStudyBlock[];
   ctaButtons?: Array<{ label: string; url: string }>;
 }
