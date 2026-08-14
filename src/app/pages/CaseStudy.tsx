@@ -234,16 +234,21 @@ export default function CaseStudy() {
               Interactive Presentation Deck
             </h2>
             <div
-              className="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden border shadow-xl"
+              className="relative w-full max-w-4xl mx-auto rounded-lg overflow-hidden border shadow-xl"
               style={{
-                paddingTop: "56.25%",
+                paddingTop: "50%",
                 borderColor,
-                background: cardBg,
+                background: "#ffffff",
               }}
             >
               <iframe
                 loading="lazy"
-                className="absolute inset-0 w-full h-full border-0"
+                className="absolute w-full border-0"
+                style={{
+                  height: "calc(100% + 55px)",
+                  top: "-48px",
+                  left: 0,
+                }}
                 src={caseStudy.canvaEmbedUrl}
                 allowFullScreen
                 allow="fullscreen"
