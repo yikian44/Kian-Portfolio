@@ -1412,8 +1412,11 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
               borderColor: `${primaryColor}30`,
               background: isDark ? "#0e1220" : "#ffffff",
               perspective: 1000,
+              transform: "translateZ(0)",
+              backfaceVisibility: "hidden",
+              willChange: "transform",
             }}>
-            <div className="relative w-full flex items-center justify-center overflow-hidden bg-black/40">
+            <div className="relative w-full flex items-center justify-center overflow-hidden bg-black/40" style={{ transform: "translateZ(0)" }}>
               <video
                 ref={videoRef}
                 src="/about-video.mp4"
@@ -1421,8 +1424,9 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
                 loop
                 muted={isMuted}
                 playsInline
-                preload="none"
+                preload="metadata"
                 className="w-full h-auto object-contain block"
+                style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
               />
