@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { RouterProvider, createHashRouter, Outlet, useOutletContext, useNavigate, useLocation } from "react-router";
+import { RouterProvider, createBrowserRouter, Outlet, useOutletContext, useNavigate, useLocation } from "react-router";
 import logoImg from "@/imports/new-logo.png";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -1790,7 +1790,7 @@ function PortfolioPage() {
 }
 
 /* ─── Router + App ──────────────────────────────────────────── */
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     Component: Root,
@@ -1798,6 +1798,7 @@ const router = createHashRouter([
       { index: true, Component: PortfolioPage },
       { path: "project/:slug", Component: ProjectDetail },
       { path: "casestudy/:slug", Component: CaseStudy },
+      { path: "*", Component: PortfolioPage },
     ],
   },
 ]);
