@@ -1418,11 +1418,10 @@ function AboutSection({ isDark, primaryColor }: { isDark: boolean; primaryColor:
                 ref={videoRef}
                 src="/about-video.mp4"
                 poster="/imperfect-vessel-cover.png"
-                autoPlay
                 loop
                 muted={isMuted}
                 playsInline
-                preload="metadata"
+                preload="none"
                 className="w-full h-auto object-contain block"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
