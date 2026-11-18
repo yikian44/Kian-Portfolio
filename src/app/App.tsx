@@ -644,13 +644,35 @@ function Nav({ isDark, onToggleDark, primaryColor, accentLabel, onCycleAccent }:
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen, logoZoomed]);
 
+  /* Scroll to a section via Lenis. For "work" on desktop the section is pinned
+     by GSAP (horizontal scroll), so we jump to the pin's start position — that
+     is the exact scroll point where the FIRST project cover is fully in view. */
+  const goToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let target: number | HTMLElement = el;
+    if (id === "work") {
+      ScrollTrigger.refresh();
+      const pinTrigger = ScrollTrigger.getAll().find(t => t.trigger === el && t.pin);
+      if (pinTrigger) target = pinTrigger.start;
+    }
+    const lenis = (window as any).lenis;
+    if (lenis) {
+      lenis.scrollTo(target, { duration: 1.2 });
+    } else if (typeof target === "number") {
+      window.scrollTo({ top: target, behavior: "smooth" });
+    } else {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const scrollTo = (id: string) => {
     setMenuOpen(false);
     if (pathname !== "/") {
       navigate("/");
-      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 400);
+      setTimeout(() => goToSection(id), 600);
     } else {
-      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 320);
+      setTimeout(() => goToSection(id), 320);
     }
   };
 
